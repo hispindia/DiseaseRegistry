@@ -1,1 +1,0 @@
-Disease Registry module for OpenMRS 1.9.7
