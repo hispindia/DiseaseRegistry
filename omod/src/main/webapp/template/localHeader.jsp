@@ -11,6 +11,12 @@
 		<a
 		href="${pageContext.request.contextPath}/module/diseaseregistry/program.list"><spring:message
 				code="diseaseregistry.program" /></a>
+	</li>
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/workflow") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/diseaseregistry/workflow.list"><spring:message
+				code="diseaseregistry.workflow" /></a>
 	</li>	
 	<!-- Add further links here -->
 </ul>
