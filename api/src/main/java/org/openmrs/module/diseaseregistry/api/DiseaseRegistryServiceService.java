@@ -14,6 +14,7 @@
 package org.openmrs.module.diseaseregistry.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
