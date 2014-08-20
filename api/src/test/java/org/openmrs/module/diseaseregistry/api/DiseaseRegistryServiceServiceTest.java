@@ -25,6 +25,6 @@ public class  DiseaseRegistryServiceServiceTest extends BaseModuleContextSensiti
 	
 	@Test
 	public void shouldSetupContext() {
-		assertNotNull(Context.getService(DiseaseRegistryServiceService.class));
+		assertNotNull(Context.getService(DiseaseRegistryService.class));
 	}
 }

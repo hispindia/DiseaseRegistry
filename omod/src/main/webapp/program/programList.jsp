@@ -29,17 +29,17 @@
 			</tr>
 			<c:forEach var="program" items="${programList}">
 				<tr>
-					<c:if test="${program.retired}">
+					<c:if test="${program.voided}">
 						<td colspan="6">
 							<i><openmrs:message code="general.retired"/><strike>
 								<a href="program.form?programId=${program.programId}">${program.name}</a>
 							</strike></i>
 						</td>
 					</c:if>
-					<c:if test="${!program.retired}">
-						<td valign="top"> <input type="checkbox" name="programId" value="${program.programId}">	</td>
+					<c:if test="${!program.voided}">
+						<td valign="top"> <input type="checkbox" name="programId" value="${program.id}">	</td>
 						<td valign="top">
-							${program.programId}
+							${program.id}
 						</td>
 						<td valign="top">
 							<a href="program.form?programId=${program.programId}">${program.name}</a>
@@ -51,19 +51,7 @@
 							<td valign="top">
 								${n.name}
 							</td>
-						</openmrs:concept>
-						<td>
-							<c:forEach var="workflow" items="${program.workflows}">
-								<a href="workflow.form?programWorkflowId=${workflow.programWorkflowId}">
-									<openmrs_tag:concept conceptId="${workflow.concept.conceptId}"/>
-									(${workflow.nonRetiredStateCount})
-								</a>
-								<br/>
-							</c:forEach>
-						</td>
-                        <td valign="top">
-							<openmrs:format concept="${program.outcomesConcept}"/>
-						</td>
+						</openmrs:concept>						
 					</c:if>
 				</tr>
 			</c:forEach>

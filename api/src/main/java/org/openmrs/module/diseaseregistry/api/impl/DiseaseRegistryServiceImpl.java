@@ -13,32 +13,41 @@
  */
 package org.openmrs.module.diseaseregistry.api.impl;
 
+import java.util.Collection;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.diseaseregistry.api.DiseaseRegistryServiceService;
+import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 
 /**
- * It is a default implementation of {@link DiseaseRegistryServiceService}.
+ * It is a default implementation of {@link DiseaseRegistryService}.
  */
-public class DiseaseRegistryServiceServiceImpl extends BaseOpenmrsService implements DiseaseRegistryServiceService {
+public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements DiseaseRegistryService {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
-	private DiseaseRegistryServiceDAO dao;
+	private DiseaseRegistryServiceDAO dao;	
 	
-	/**
-     * @param dao the dao to set
-     */
     public void setDao(DiseaseRegistryServiceDAO dao) {
 	    this.dao = dao;
-    }
+    }    
     
-    /**
-     * @return the dao
-     */
     public DiseaseRegistryServiceDAO getDao() {
 	    return dao;
     }
+    
+    @Override
+	public DRProgram saveProgram(DRProgram program) {
+    	return dao.saveProgram(program);
+    }
+    
+    @Override
+	public Collection<DRProgram> getPrograms(boolean includeRetired) {
+    	return dao.getPrograms(includeRetired);
+    }
+    
+    
 }

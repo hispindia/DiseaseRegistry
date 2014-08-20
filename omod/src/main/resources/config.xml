@@ -34,10 +34,8 @@
 	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-				
-		PatientStateEncounter.hbm.xml
-				
-	</mappingFiles>
+		DRProgram.hbm.xml
+	</mappingFiles>	
 
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.diseaseregistry.api.model">
+
+	<class name="DRProgram" table="dr_program" batch-size="500">
+
+		<id name="id" type="int" column="dr_program_id"
+			unsaved-value="0">
+				<generator class="native" />
+		</id>
+		<property name="name" column="name" />
+		<property name="description" column="description" length="255" />
+		<many-to-one name="concept" class="org.openmrs.Concept" column="concept_id" cascade="none" />
+		
+		<many-to-one name="creator" class="org.openmrs.User" column="created_by" not-null="true"/>
+		<property name="dateCreated" type="java.util.Date" column="created_date" not-null="true" length="19"/>
+		<many-to-one name="changedBy" class="org.openmrs.User" column="updated_by" not-null="true"/>
+		<property name="dateChanged" type="java.util.Date" column="updated_date" length="19"/>
+		<property name="voided" type="java.lang.Boolean" column="retired" length="1" not-null="true" />		
+		<property name="dateVoided" type="java.util.Date" column="retired_date" length="19" />		
+		<many-to-one name="voidedBy" class="org.openmrs.User" column="retired_by" />
+		<property name="voidReason" type="java.lang.String"	column="retired_reason" length="255" />
+		
+	</class>
+</hibernate-mapping>

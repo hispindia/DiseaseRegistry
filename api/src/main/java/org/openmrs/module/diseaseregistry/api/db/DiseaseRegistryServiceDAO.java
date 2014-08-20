@@ -13,14 +13,18 @@
  */
 package org.openmrs.module.diseaseregistry.api.db;
 
-import org.openmrs.module.diseaseregistry.api.DiseaseRegistryServiceService;
+import java.util.Collection;
+
+import org.openmrs.api.db.DAOException;
+import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 
 /**
- *  Database methods for {@link DiseaseRegistryServiceService}.
+ *  Database methods for {@link DiseaseRegistryService}.
  */
 public interface DiseaseRegistryServiceDAO {
-	
-	/*
-	 * Add DAO methods here
-	 */
+
+	public abstract Collection<DRProgram> getPrograms(boolean includeRetired);
+
+	public abstract DRProgram saveProgram(DRProgram program) throws DAOException;
 }

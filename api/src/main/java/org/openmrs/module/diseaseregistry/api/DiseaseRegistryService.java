@@ -13,8 +13,11 @@
  */
 package org.openmrs.module.diseaseregistry.api;
 
+import java.util.Collection;
+
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.ProgramWorkflowService;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -28,7 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @see org.openmrs.api.context.Context
  */
 @Transactional
-public interface DiseaseRegistryServiceService extends OpenmrsService {
+public interface DiseaseRegistryService extends OpenmrsService {
+
+	public abstract Collection<DRProgram> getPrograms(boolean includeRetired);
+
+	public abstract DRProgram saveProgram(DRProgram program);
      
 	/*
 	 * Add service methods here

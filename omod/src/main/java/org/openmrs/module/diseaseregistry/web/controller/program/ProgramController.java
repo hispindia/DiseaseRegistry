@@ -13,16 +13,21 @@
  */
 package org.openmrs.module.diseaseregistry.web.controller.program;
 
-import java.util.List;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Program;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.web.controller.common.ConceptWordEditor;
+import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,13 +41,19 @@ public class ProgramController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(java.lang.Boolean.class, new CustomBooleanEditor("true", "false", true));
+		binder.registerCustomEditor(org.openmrs.Concept.class, new ConceptWordEditor());
+	}
+	
 	@RequestMapping(value = "/module/diseaseregistry/program.list", method = RequestMethod.GET)
 	public String list(ModelMap model) {
 		
-		ProgramWorkflowService ps = Context.getProgramWorkflowService();
-		List<Program> programList = ps.getAllPrograms();
+		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
+		
 		model.addAttribute("user", Context.getAuthenticatedUser());
-		model.addAttribute("programList", programList);		
+		model.addAttribute("programList", drs.getPrograms(false));		
 		return "/module/diseaseregistry/program/programList";
 	}
 	
@@ -54,16 +65,20 @@ public class ProgramController {
 	}
 	
 	@RequestMapping(value = "/module/diseaseregistry/program.form", method = RequestMethod.POST)	
-	public String form(@ModelAttribute("program") Program program, BindingResult bindingResult, ModelMap model) {	
+	public String form(@ModelAttribute("program") DRProgram program, BindingResult bindingResult, ModelMap model) {	
 		
 		new ProgramValidator().validate(program, bindingResult);
 		if (bindingResult.hasErrors()) {
 			return "/module/diseaseregistry/program.form";
 		}
-			
-		ProgramWorkflowService ps = Context.getProgramWorkflowService();
-		ps.saveProgram(program);
+		System.out.println(program.getConcept().getConceptId());
+		
+		program.setCreator(Context.getAuthenticatedUser());
+		program.setDateCreated(new Date());	
+		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
+		drs.saveProgram(program);
+		
 		model.addAttribute("user", Context.getAuthenticatedUser());
-		return "/module/diseaseregistry/program/programForm";
+		return "redirect:/module/diseaseregistry/program.list";
 	}
 }

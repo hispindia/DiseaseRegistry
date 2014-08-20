@@ -13,10 +13,16 @@
  */
 package org.openmrs.module.diseaseregistry.api.db.hibernate;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 
 /**
  * It is a default implementation of  {@link DiseaseRegistryServiceDAO}.
@@ -26,17 +32,25 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 	
 	private SessionFactory sessionFactory;
 	
-	/**
-     * @param sessionFactory the sessionFactory to set
-     */
     public void setSessionFactory(SessionFactory sessionFactory) {
 	    this.sessionFactory = sessionFactory;
-    }
-    
-	/**
-     * @return the sessionFactory
-     */
+    }    
+	
     public SessionFactory getSessionFactory() {
 	    return sessionFactory;
     }
+        
+    @Override
+	public DRProgram saveProgram(DRProgram program) throws DAOException {
+		return (DRProgram) sessionFactory.getCurrentSession().merge(program);
+	}
+    
+    @Override
+	@SuppressWarnings("unchecked")
+	public Collection<DRProgram> getPrograms(boolean includeRetired) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DRProgram.class);
+		if (!includeRetired)
+			criteria.add(Restrictions.eq("voided", false));
+		return criteria.list();		
+	}
 }
