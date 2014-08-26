@@ -20,6 +20,15 @@
 <form method="post" id="theForm">
 	<table>
 	<tr>		
+		<th><openmrs:message code="diseaseregistry.program"/><span class="required">*</span></th>
+		<td>
+			<spring:bind path="workflow.program">
+				<input id="concept" type="text" name="${status.expression}" value="${status.value}" size="35" />
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
+	<tr>		
 		<th><openmrs:message code="Program.concept"/><span class="required">*</span></th>
 		<td>
 			<spring:bind path="workflow.concept">

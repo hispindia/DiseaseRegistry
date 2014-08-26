@@ -24,15 +24,14 @@
 				<th> <openmrs:message code="general.name"/> </th>
 				<th> <openmrs:message code="general.description"/> </th>
 				<th> <openmrs:message code="Concept.name"/> </th>
-				<th> <openmrs:message code="Program.workflows"/> </th>
-				<th> <openmrs:message code="Program.outcomes"/> </th>
+				<th> <openmrs:message code="Program.workflows"/> </th>				
 			</tr>
 			<c:forEach var="program" items="${programList}">
 				<tr>
 					<c:if test="${program.voided}">
 						<td colspan="6">
 							<i><openmrs:message code="general.retired"/><strike>
-								<a href="program.form?programId=${program.programId}">${program.name}</a>
+								<a href="program.form?programId=${program.id}">${program.name}</a>
 							</strike></i>
 						</td>
 					</c:if>
@@ -42,7 +41,7 @@
 							${program.id}
 						</td>
 						<td valign="top">
-							<a href="program.form?programId=${program.programId}">${program.name}</a>
+							<a href="program.form?programId=${program.id}">${program.name}</a>
 						</td>
 						<td valign="top">
 							${program.description}

@@ -22,7 +22,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
+import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 
 /**
  * It is a default implementation of  {@link DiseaseRegistryServiceDAO}.
@@ -52,5 +54,26 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 		if (!includeRetired)
 			criteria.add(Restrictions.eq("voided", false));
 		return criteria.list();		
+	}
+    
+    
+    @Override
+	public DRProgram getProgram(Integer id) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				DRProgram.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (DRProgram) criteria.uniqueResult();
+	}    
+    
+	@Override
+	public DRWorkflow saveWorkflow(DRWorkflow workflow) throws DAOException {
+		return (DRWorkflow) sessionFactory.getCurrentSession().merge(workflow);
+	}
+	
+	@Override
+	public DRConcept saveConcept(DRConcept concept) throws DAOException {
+		System.out.println(">>> " + concept.getConcept());
+		System.out.println(">>> " + concept.getWorkflow());
+		return (DRConcept) sessionFactory.getCurrentSession().merge(concept);
 	}
 }

@@ -17,7 +17,9 @@ import java.util.Collection;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.ProgramWorkflowService;
+import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -32,10 +34,19 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface DiseaseRegistryService extends OpenmrsService {
+	
+	public static final boolean NOT_INCLUDE_RETIRED = false;
+	public static final boolean INCLUDE_RETIRED = true;
 
 	public abstract Collection<DRProgram> getPrograms(boolean includeRetired);
 
 	public abstract DRProgram saveProgram(DRProgram program);
+
+	public abstract DRProgram getProgram(Integer id);
+
+	public abstract DRWorkflow saveWorkflow(DRWorkflow workflow);
+
+	public abstract DRConcept saveConcept(DRConcept concept);
      
 	/*
 	 * Add service methods here

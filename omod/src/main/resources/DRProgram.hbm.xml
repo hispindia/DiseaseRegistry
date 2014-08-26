@@ -13,7 +13,7 @@
 		</id>
 		<property name="name" column="name" />
 		<property name="description" column="description" length="255" />
-		<many-to-one name="concept" class="org.openmrs.Concept" column="concept_id" cascade="none" />
+		<many-to-one name="concept" class="org.openmrs.Concept" column="concept_id" cascade="none"/>
 		
 		<many-to-one name="creator" class="org.openmrs.User" column="created_by" not-null="true"/>
 		<property name="dateCreated" type="java.util.Date" column="created_date" not-null="true" length="19"/>

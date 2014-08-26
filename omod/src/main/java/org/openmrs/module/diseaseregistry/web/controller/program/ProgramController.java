@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
@@ -38,46 +37,93 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class ProgramController {
-	
+
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(java.lang.Boolean.class, new CustomBooleanEditor("true", "false", true));
-		binder.registerCustomEditor(org.openmrs.Concept.class, new ConceptWordEditor());
+		binder.registerCustomEditor(java.lang.Boolean.class,
+				new CustomBooleanEditor("true", "false", true));
+		binder.registerCustomEditor(org.openmrs.Concept.class,
+				new ConceptWordEditor());
 	}
-	
+
 	@RequestMapping(value = "/module/diseaseregistry/program.list", method = RequestMethod.GET)
 	public String list(ModelMap model) {
-		
-		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
-		
+
+		DiseaseRegistryService drs = Context
+				.getService(DiseaseRegistryService.class);
+
 		model.addAttribute("user", Context.getAuthenticatedUser());
-		model.addAttribute("programList", drs.getPrograms(false));		
+		model.addAttribute("programList", drs.getPrograms(false));
 		return "/module/diseaseregistry/program/programList";
 	}
 	
-	@RequestMapping(value = "/module/diseaseregistry/program.form", method = RequestMethod.GET)	
-	public String form(@ModelAttribute("program") Program program, BindingResult bindingResult, ModelMap model, @RequestParam(value="id", required=false) Integer id) {		
+	@RequestMapping(value = "/module/diseaseregistry/program.list", method = RequestMethod.POST)
+	public String delete(ModelMap model, @RequestParam(value = "programId", required = false) String ids) {
+		
+		String[] idList = ids.split(",");
+		for(String id:idList) {
 			
+			Integer programId = Integer.parseInt(id);
+			DRProgram program = Context.getService(DiseaseRegistryService.class)
+					.getProgram(programId);
+			program.setVoided(true);
+			program.setVoidedBy(Context.getAuthenticatedUser());
+			program.setDateVoided(new Date());
+			program.setVoidReason("Retired on Manage Program page");
+			Context.getService(DiseaseRegistryService.class).saveProgram(program);
+		}
+		
+		return "redirect:/module/diseaseregistry/program.list";
+	}
+
+	@RequestMapping(value = "/module/diseaseregistry/program.form", method = RequestMethod.GET)
+	public String form(@ModelAttribute("program") DRProgram program,
+			BindingResult bindingResult, ModelMap model,
+			@RequestParam(value = "programId", required = false) Integer id) {
+
+		if (id != null) {
+
+			program = Context.getService(DiseaseRegistryService.class)
+					.getProgram(id);
+		} else {
+			program = new DRProgram();
+		}
+
+		model.addAttribute("program", program);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "/module/diseaseregistry/program/programForm";
 	}
-	
-	@RequestMapping(value = "/module/diseaseregistry/program.form", method = RequestMethod.POST)	
-	public String form(@ModelAttribute("program") DRProgram program, BindingResult bindingResult, ModelMap model) {	
-		
-		new ProgramValidator().validate(program, bindingResult);
+
+	@RequestMapping(value = "/module/diseaseregistry/program.form", method = RequestMethod.POST)
+	public String form(@ModelAttribute("program") DRProgram submitProgram,
+			BindingResult bindingResult, ModelMap model) {
+
+		new ProgramValidator().validate(submitProgram, bindingResult);
 		if (bindingResult.hasErrors()) {
 			return "/module/diseaseregistry/program.form";
 		}
-		System.out.println(program.getConcept().getConceptId());
-		
-		program.setCreator(Context.getAuthenticatedUser());
-		program.setDateCreated(new Date());	
-		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
-		drs.saveProgram(program);
-		
+
+		if (submitProgram.getId() != null) {
+
+			DRProgram program = Context
+					.getService(DiseaseRegistryService.class).getProgram(submitProgram.getId());
+			program.setName(submitProgram.getName());
+			program.setDescription(submitProgram.getDescription());
+			program.setConcept(submitProgram.getConcept());
+			program.setDateChanged(new Date());
+			program.setChangedBy(Context.getAuthenticatedUser());
+			Context.getService(DiseaseRegistryService.class).saveProgram(
+					program);
+
+		} else {
+			submitProgram.setCreator(Context.getAuthenticatedUser());
+			submitProgram.setDateCreated(new Date());
+			Context.getService(DiseaseRegistryService.class).saveProgram(
+					submitProgram);
+		}
+
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "redirect:/module/diseaseregistry/program.list";
 	}

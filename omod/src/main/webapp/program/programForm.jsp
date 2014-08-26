@@ -15,7 +15,12 @@
 	}
 </script>
 
+<h2><spring:message code="Program.addEdit" /></h2>
+
 <form method="post" id="theForm">
+	<spring:bind path="program.id">
+		<input id="name" type="hidden" name="${status.expression}" value="${status.value}" size="35" />		
+	</spring:bind>
 	<table>
 	<tr>		
 		<th><openmrs:message code="general.name"/><span class="required">*</span></th>

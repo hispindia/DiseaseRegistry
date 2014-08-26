@@ -9,6 +9,6 @@
 
 <br /><br />
 
-${workflowList}
+${programs}
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

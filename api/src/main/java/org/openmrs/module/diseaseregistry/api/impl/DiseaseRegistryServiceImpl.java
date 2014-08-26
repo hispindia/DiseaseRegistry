@@ -15,12 +15,14 @@ package org.openmrs.module.diseaseregistry.api.impl;
 
 import java.util.Collection;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
+import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 
 /**
  * It is a default implementation of {@link DiseaseRegistryService}.
@@ -49,5 +51,18 @@ public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements Di
     	return dao.getPrograms(includeRetired);
     }
     
+    @Override
+	public DRProgram getProgram(Integer id) {
+    	return dao.getProgram(id);
+    }    
     
+	@Override
+	public DRWorkflow saveWorkflow(DRWorkflow workflow) {
+    	return dao.saveWorkflow(workflow);
+    }	
+	
+	@Override
+	public DRConcept saveConcept(DRConcept concept) {
+    	return dao.saveConcept(concept);
+    }
 }

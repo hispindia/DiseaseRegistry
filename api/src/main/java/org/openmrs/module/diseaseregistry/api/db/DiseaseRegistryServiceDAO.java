@@ -15,9 +15,13 @@ package org.openmrs.module.diseaseregistry.api.db;
 
 import java.util.Collection;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 
 /**
  *  Database methods for {@link DiseaseRegistryService}.
@@ -27,4 +31,10 @@ public interface DiseaseRegistryServiceDAO {
 	public abstract Collection<DRProgram> getPrograms(boolean includeRetired);
 
 	public abstract DRProgram saveProgram(DRProgram program) throws DAOException;
+
+	public abstract DRProgram getProgram(Integer id);
+
+	public abstract DRWorkflow saveWorkflow(DRWorkflow workflow) throws DAOException;
+
+	public abstract DRConcept saveConcept(DRConcept concept) throws DAOException;
 }

@@ -35,6 +35,39 @@
 			`retired_reason` varchar(255) DEFAULT NULL,
 			PRIMARY	KEY (`dr_program_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `dr_workflow` (
+			`dr_workflow_id` int(11) NOT NULL AUTO_INCREMENT,			
+			`name` varchar(255) DEFAULT NULL,
+			`description` varchar(1000) DEFAULT NULL,
+			`concept_id` int(11) DEFAULT NULL,
+			`dr_program_id` int(11) DEFAULT NULL,
+			`created_by` int(11) DEFAULT NULL,
+			`created_date` datetime DEFAULT NULL,
+			`updated_by` int(11) DEFAULT NULL,
+			`updated_date` datetime DEFAULT NULL,
+			`retired` bit(1) default NULL,
+			`retired_date` datetime DEFAULT NULL,
+			`retired_by` int(11) DEFAULT NULL,
+			`retired_reason` varchar(255) DEFAULT NULL,
+			PRIMARY	KEY (`dr_workflow_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `dr_concept` (	
+			`dr_concept_id` int(11) NOT NULL AUTO_INCREMENT,		
+			`concept_id` int(11) NOT NULL,
+			`dr_workflow_id` int(11) NOT NULL,
+			`weight` int(11) NOT NULL DEFAULT 0,
+			`created_by` int(11) DEFAULT NULL,
+			`created_date` datetime DEFAULT NULL,
+			`updated_by` int(11) DEFAULT NULL,
+			`updated_date` datetime DEFAULT NULL,
+			`retired` bit(1) default NULL,
+			`retired_date` datetime DEFAULT NULL,
+			`retired_by` int(11) DEFAULT NULL,
+			`retired_reason` varchar(255) DEFAULT NULL,
+			PRIMARY	KEY (`dr_concept_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
 	</diff>	
 </sqldiff>

@@ -35,6 +35,8 @@
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 		DRProgram.hbm.xml
+		DRWorkflow.hbm.xml
+		DRConcept.hbm.xml
 	</mappingFiles>	
 
 	<!-- Internationalization -->
