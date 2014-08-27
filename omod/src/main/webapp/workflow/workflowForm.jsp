@@ -23,7 +23,29 @@
 		<th><openmrs:message code="diseaseregistry.program"/><span class="required">*</span></th>
 		<td>
 			<spring:bind path="workflow.program">
-				<input id="concept" type="text" name="${status.expression}" value="${status.value}" size="35" />
+				<select id="program" name="${status.expression}" value="${status.value}">
+					<c:forEach var="program" items="${programs}">
+    					<option value="${program.id}">${program.name}</option>
+					</c:forEach>
+				</select>				
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
+	<tr>		
+		<th><openmrs:message code="general.name"/><span class="required">*</span></th>
+		<td>
+			<spring:bind path="workflow.name">
+				<input id="name" type="text" name="${status.expression}" value="${status.value}" size="35" />
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
+	<tr>		
+		<th><openmrs:message code="general.description"/><span class="required"></span></th>
+		<td>
+			<spring:bind path="workflow.description">
+				<input id="description" type="text" name="${status.expression}" value="${status.value}" size="35" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>

@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.web.controller.common.ConceptWordEditor;
+import org.openmrs.module.diseaseregistry.web.controller.common.DRProgramEditor;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,7 +46,7 @@ public class ProgramController {
 		binder.registerCustomEditor(java.lang.Boolean.class,
 				new CustomBooleanEditor("true", "false", true));
 		binder.registerCustomEditor(org.openmrs.Concept.class,
-				new ConceptWordEditor());
+				new ConceptWordEditor());		
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/program.list", method = RequestMethod.GET)
@@ -58,23 +59,26 @@ public class ProgramController {
 		model.addAttribute("programList", drs.getPrograms(false));
 		return "/module/diseaseregistry/program/programList";
 	}
-	
+
 	@RequestMapping(value = "/module/diseaseregistry/program.list", method = RequestMethod.POST)
-	public String delete(ModelMap model, @RequestParam(value = "programId", required = false) String ids) {
-		
+	public String delete(ModelMap model,
+			@RequestParam(value = "programId", required = false) String ids) {
+
 		String[] idList = ids.split(",");
-		for(String id:idList) {
-			
+		for (String id : idList) {
+
 			Integer programId = Integer.parseInt(id);
-			DRProgram program = Context.getService(DiseaseRegistryService.class)
-					.getProgram(programId);
+			DRProgram program = Context
+					.getService(DiseaseRegistryService.class).getProgram(
+							programId);
 			program.setVoided(true);
 			program.setVoidedBy(Context.getAuthenticatedUser());
 			program.setDateVoided(new Date());
 			program.setVoidReason("Retired on Manage Program page");
-			Context.getService(DiseaseRegistryService.class).saveProgram(program);
+			Context.getService(DiseaseRegistryService.class).saveProgram(
+					program);
 		}
-		
+
 		return "redirect:/module/diseaseregistry/program.list";
 	}
 
@@ -108,7 +112,8 @@ public class ProgramController {
 		if (submitProgram.getId() != null) {
 
 			DRProgram program = Context
-					.getService(DiseaseRegistryService.class).getProgram(submitProgram.getId());
+					.getService(DiseaseRegistryService.class).getProgram(
+							submitProgram.getId());
 			program.setName(submitProgram.getName());
 			program.setDescription(submitProgram.getDescription());
 			program.setConcept(submitProgram.getConcept());

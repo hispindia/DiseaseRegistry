@@ -14,21 +14,18 @@
 package org.openmrs.module.diseaseregistry.web.controller.workflow;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.ConceptWord;
 import org.openmrs.ProgramWorkflow;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
-import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 import org.openmrs.module.diseaseregistry.web.controller.common.ConceptWordEditor;
+import org.openmrs.module.diseaseregistry.web.controller.common.DRProgramEditor;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -54,6 +51,8 @@ public class WorkflowController {
 				new CustomBooleanEditor("true", "false", true));
 		binder.registerCustomEditor(org.openmrs.Concept.class,
 				new ConceptWordEditor());
+		binder.registerCustomEditor(org.openmrs.module.diseaseregistry.api.model.DRProgram.class,
+				new DRProgramEditor());
 	}
 
 	@ModelAttribute("programs")
@@ -63,20 +62,7 @@ public class WorkflowController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/workflow.list", method = RequestMethod.GET)
-	public String list(ModelMap model) {
-		
-		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
-		DRProgram program = drs.getProgram(1);
-		DRWorkflow workflow = new DRWorkflow();
-		workflow.setProgram(program);
-		workflow.setName("testing mapping");
-		workflow.setDescription("description");
-		workflow = drs.saveWorkflow(workflow);	
-		
-		DRConcept concept = new DRConcept();
-		concept.setWorkflow(workflow);		
-		concept.setConcept(Context.getConceptService().getConcept(4210));
-		drs.saveConcept(concept);
+	public String list(ModelMap model) {		
 		
 		return "/module/diseaseregistry/workflow/workflowList";
 	}
@@ -90,12 +76,19 @@ public class WorkflowController {
 		return "/module/diseaseregistry/workflow/workflowForm";
 	}
 
-	@RequestMapping(value = "/module/diseaseregistry/workflow.form", method = RequestMethod.POST)
-	public String form(@ModelAttribute("workflow") ProgramWorkflow workflow,
+	@RequestMapping(value = "/module/diseaseregistry/workflow.form", method = RequestMethod.POST)	                         
+	public String form(@ModelAttribute("workflow") DRWorkflow workflow,
 			BindingResult bindingResult, ModelMap model) {
-
-		ProgramWorkflowService ps = Context.getProgramWorkflowService();
-		ps.createWorkflow(workflow);
+		
+		new WorkflowValidator().validate(workflow, bindingResult);
+		if (bindingResult.hasErrors()) {
+			return "/module/diseaseregistry/workflow.form";
+		}
+		
+		workflow.setCreator(Context.getAuthenticatedUser());
+		workflow.setDateCreated(new Date());
+		Context.getService(DiseaseRegistryService.class).saveWorkflow(workflow);
+		
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "redirect:/module/diseaseregistry/workflow.list";
 	}
