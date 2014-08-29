@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
@@ -96,27 +96,46 @@ public class WorkflowController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/workflow.form", method = RequestMethod.GET)
-	public String form(@ModelAttribute("workflow") ProgramWorkflow workflow,
+	public String form(@ModelAttribute("workflow") DRWorkflow workflow,
 			BindingResult bindingResult, ModelMap model,
-			@RequestParam(value = "id", required = false) String ids) {		
+			@RequestParam(value = "id", required = false) String id) {		
 		
-
+		if(StringUtils.isNotBlank(id)) {
+			workflow = Context.getService(DiseaseRegistryService.class).getWorkflow(Integer.parseInt(id));
+			model.addAttribute("workflow", workflow);	
+		}		
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "/module/diseaseregistry/workflow/workflowForm";
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/workflow.form", method = RequestMethod.POST)	                         
-	public String form(@ModelAttribute("workflow") DRWorkflow workflow,
+	public String form(@ModelAttribute("workflow") DRWorkflow submittedWorkflow,
 			BindingResult bindingResult, ModelMap model) {
 		
-		new WorkflowValidator().validate(workflow, bindingResult);
+		new WorkflowValidator().validate(submittedWorkflow, bindingResult);
 		if (bindingResult.hasErrors()) {
 			return "/module/diseaseregistry/workflow.form";
 		}
 		
-		workflow.setCreator(Context.getAuthenticatedUser());
-		workflow.setDateCreated(new Date());
-		Context.getService(DiseaseRegistryService.class).saveWorkflow(workflow);
+		if(submittedWorkflow.getId()!=null) {
+
+			DRWorkflow workflow = Context.getService(DiseaseRegistryService.class).getWorkflow(submittedWorkflow.getId());
+			workflow.setProgram(submittedWorkflow.getProgram());
+			workflow.setName(submittedWorkflow.getName());
+			workflow.setDescription(submittedWorkflow.getDescription());
+			workflow.setConcept(submittedWorkflow.getConcept());
+			workflow.setDateChanged(new Date());
+			workflow.setChangedBy(Context.getAuthenticatedUser());
+			Context.getService(DiseaseRegistryService.class).saveWorkflow(workflow);
+			
+		} else {
+			
+			submittedWorkflow.setCreator(Context.getAuthenticatedUser());
+			submittedWorkflow.setDateCreated(new Date());
+			Context.getService(DiseaseRegistryService.class).saveWorkflow(submittedWorkflow);
+		}
+		
+		
 		
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "redirect:/module/diseaseregistry/workflow.list";

@@ -6,12 +6,44 @@
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery("#concept").autocomplete('${pageContext.request.contextPath}/module/diseaseregistry/ajax/autocompleteConceptSearch.htm').result(function(event, item){
-			insertConcept(item);
-		});
+			insertConcept("#concept", item);
+		});		
+
+		jQuery("#test").autocomplete('${pageContext.request.contextPath}/module/diseaseregistry/ajax/autocompleteConceptSearch.htm').result(function(event, item){
+			appendTest(item);
+		});		
     });
 
-    function insertConcept(item){		
-		jQuery("#concept").val(item);
+    function insertConcept(id, item){		
+		jQuery(id).val(item);
+	}
+
+	function appendTest(item) {
+
+		var d = new Date();
+		id = d.getTime();
+		template = "<div id='_id_'><input name='test' value='_item_' readonly/><a href='javascript:moveUp(_id_)'>Up</a>&nbsp;<a href='javascript:moveDown(_id_)'>Down</a>&nbsp;<a href='javascript:remove(_id_)'>Delete</a></div>";
+		template = template.replace(/_id_/g, id);
+		template = template.replace(/_item_/g, item);
+		jQuery("#tests").append(template);
+		jQuery("#test").val("");
+	}
+
+	function moveUp(row) {
+
+		me = jQuery("#" + row);
+		prev = jQuery("#" + row).prev();
+		me.after(prev);
+	}
+
+	function moveDown(row) {
+		me = jQuery("#" + row);
+		next = jQuery("#" + row).next();
+		me.before(next);
+	}
+
+	function remove(row) {		
+		jQuery("#" + row).remove();
 	}
 </script>
 
@@ -58,10 +90,16 @@
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
+	</tr>
+	<tr>		
+		<th><openmrs:message code="diseaseregistry.tests"/></th>
+		<td id="tests">			
+			<input id="test" type="text" size="35" /><br/>
+		</td>
 	</tr>	
-	</table>
-	<br/>
-	<input type="submit" value='<openmrs:message code="Program.save"/>' onClick="jQuery('#theForm').submit()" />
+	</table>	
+	<input type="submit" value='<openmrs:message code="Program.save"/>' onClick="jQuery('#theForm').submit()" /> <br/><br/>
+
 </form>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
