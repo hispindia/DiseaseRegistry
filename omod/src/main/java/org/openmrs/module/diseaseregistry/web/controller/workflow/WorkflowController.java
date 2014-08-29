@@ -62,7 +62,35 @@ public class WorkflowController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/workflow.list", method = RequestMethod.GET)
-	public String list(ModelMap model) {		
+	public String list(ModelMap model) {
+		
+		List<DRWorkflow> workflows = new ArrayList<DRWorkflow>(Context.getService(DiseaseRegistryService.class).getWorkflows(DiseaseRegistryService.NOT_INCLUDE_RETIRED));
+		
+		model.addAttribute("workflows", workflows);
+		model.addAttribute("user", Context.getAuthenticatedUser());
+		
+		return "/module/diseaseregistry/workflow/workflowList";
+	}
+	
+	@RequestMapping(value = "/module/diseaseregistry/workflow.list", method = RequestMethod.POST)
+	public String delete(ModelMap model, @RequestParam(value = "id", required = false) String ids) {
+		
+		String[] idList = ids.split(",");
+		for (String id : idList) {
+
+			Integer workflowId = Integer.parseInt(id);
+			DRWorkflow workflow = Context
+					.getService(DiseaseRegistryService.class).getWorkflow(
+							workflowId);
+			workflow.setVoided(true);
+			workflow.setVoidedBy(Context.getAuthenticatedUser());
+			workflow.setDateVoided(new Date());
+			workflow.setVoidReason("Retired on Manage Program page");
+			Context.getService(DiseaseRegistryService.class).saveWorkflow(
+					workflow);
+		}
+		
+		model.addAttribute("user", Context.getAuthenticatedUser());
 		
 		return "/module/diseaseregistry/workflow/workflowList";
 	}
@@ -70,7 +98,8 @@ public class WorkflowController {
 	@RequestMapping(value = "/module/diseaseregistry/workflow.form", method = RequestMethod.GET)
 	public String form(@ModelAttribute("workflow") ProgramWorkflow workflow,
 			BindingResult bindingResult, ModelMap model,
-			@RequestParam(value = "id", required = false) Integer id) {
+			@RequestParam(value = "id", required = false) String ids) {		
+		
 
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "/module/diseaseregistry/workflow/workflowForm";

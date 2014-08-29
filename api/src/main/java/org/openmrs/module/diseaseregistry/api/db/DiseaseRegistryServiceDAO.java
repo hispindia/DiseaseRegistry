@@ -37,4 +37,8 @@ public interface DiseaseRegistryServiceDAO {
 	public abstract DRWorkflow saveWorkflow(DRWorkflow workflow) throws DAOException;
 
 	public abstract DRConcept saveConcept(DRConcept concept) throws DAOException;
+
+	public abstract Collection<DRWorkflow> getWorkflows(boolean includeRetired);
+
+	public abstract DRWorkflow getWorkflow(Integer id);
 }

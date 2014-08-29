@@ -63,7 +63,7 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 				DRProgram.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (DRProgram) criteria.uniqueResult();
-	}    
+	}
     
 	@Override
 	public DRWorkflow saveWorkflow(DRWorkflow workflow) throws DAOException {
@@ -71,9 +71,23 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 	}
 	
 	@Override
-	public DRConcept saveConcept(DRConcept concept) throws DAOException {
-		System.out.println(">>> " + concept.getConcept());
-		System.out.println(">>> " + concept.getWorkflow());
+	public Collection<DRWorkflow> getWorkflows(boolean includeRetired) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DRWorkflow.class);
+		if (!includeRetired)
+			criteria.add(Restrictions.eq("voided", false));
+		return criteria.list();		
+	}
+	
+	@Override
+	public DRWorkflow getWorkflow(Integer id) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				DRWorkflow.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (DRWorkflow) criteria.uniqueResult();
+	}
+	
+	@Override
+	public DRConcept saveConcept(DRConcept concept) throws DAOException {		
 		return (DRConcept) sessionFactory.getCurrentSession().merge(concept);
 	}
 }
