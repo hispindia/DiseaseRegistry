@@ -41,4 +41,8 @@ public interface DiseaseRegistryServiceDAO {
 	public abstract Collection<DRWorkflow> getWorkflows(boolean includeRetired);
 
 	public abstract DRWorkflow getWorkflow(Integer id);
+	
+	public abstract Collection<DRConcept> getConceptByWorkflow(DRWorkflow workflow, boolean includeRetired);
+
+	public abstract DRConcept getConcept(String id);
 }

@@ -12,7 +12,7 @@ public class DRConcept extends BaseOpenmrsData implements Serializable {
      */
     private static final long serialVersionUID = 1L;	
 	
-    private Integer id;
+    private String drConceptId;
 	private Concept concept;
 	private DRWorkflow workflow;
 	private Integer weight;
@@ -44,15 +44,15 @@ public class DRConcept extends BaseOpenmrsData implements Serializable {
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
-	}
+	}	
+	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((concept == null) ? 0 : concept.hashCode());
 		result = prime * result
-				+ ((workflow == null) ? 0 : workflow.hashCode());
+				+ ((drConceptId == null) ? 0 : drConceptId.hashCode());
 		return result;
 	}
 
@@ -65,29 +65,36 @@ public class DRConcept extends BaseOpenmrsData implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		DRConcept other = (DRConcept) obj;
-		if (concept == null) {
-			if (other.concept != null)
+		if (drConceptId == null) {
+			if (other.drConceptId != null)
 				return false;
-		} else if (!concept.equals(other.concept))
-			return false;
-		if (workflow == null) {
-			if (other.workflow != null)
-				return false;
-		} else if (!workflow.equals(other.workflow))
+		} else if (!drConceptId.equals(other.drConceptId))
 			return false;
 		return true;
-	}
+	}	
 
 	@Override
 	public String toString() {
-		return "DRConcept [concept=" + concept + ", workflow=" + workflow + "]";
+		return "DRConcept [drConceptId=" + drConceptId + ", concept=" + concept
+				+ ", workflow=" + workflow + ", weight=" + weight + "]";
 	}
 
 	public Integer getId() {
-		return id;
+		return null;
 	}
 
 	public void setId(Integer id) {
-		this.id = id;
+		
 	}
+
+	public String getDrConceptId() {
+		return drConceptId;
+	}
+
+	public void setDrConceptId(String drConceptId) {
+		this.drConceptId = drConceptId;
+	}
+	
+	
+	
 }

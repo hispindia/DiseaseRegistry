@@ -89,5 +89,23 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 	@Override
 	public DRConcept saveConcept(DRConcept concept) throws DAOException {		
 		return (DRConcept) sessionFactory.getCurrentSession().merge(concept);
+	}	
+	
+	@Override
+	public Collection<DRConcept> getConceptByWorkflow(DRWorkflow workflow, boolean includeRetired) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				DRConcept.class);
+		criteria.add(Restrictions.eq("workflow", workflow));
+		if (!includeRetired)
+			criteria.add(Restrictions.eq("voided", false));
+		return criteria.list();
+	}	
+	
+	@Override
+	public DRConcept getConcept(String id) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				DRConcept.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (DRConcept) criteria.uniqueResult();
 	}
 }

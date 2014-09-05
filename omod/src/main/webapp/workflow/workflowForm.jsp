@@ -22,7 +22,7 @@
 
 		var d = new Date();
 		id = d.getTime();
-		template = "<div id='_id_'><input name='test' value='_item_' readonly/><a href='javascript:moveUp(_id_)'>Up</a>&nbsp;<a href='javascript:moveDown(_id_)'>Down</a>&nbsp;<a href='javascript:remove(_id_)'>Delete</a></div>";
+		template = "<div id='_id_' class='test'><input name='_id_' value='_item_' readonly/><a href='javascript:moveUp(_id_)'>Up</a>&nbsp;<a href='javascript:moveDown(_id_)'>Down</a>&nbsp;<a href='javascript:remove(_id_)'>Delete</a><input name='tests' type='hidden' value='_id_'/></div>";
 		template = template.replace(/_id_/g, id);
 		template = template.replace(/_item_/g, item);
 		jQuery("#tests").append(template);
@@ -33,13 +33,17 @@
 
 		me = jQuery("#" + row);
 		prev = jQuery("#" + row).prev();
-		me.after(prev);
+		if(prev.attr("class")=="test") {
+			me.after(prev);	
+		}
 	}
 
 	function moveDown(row) {
 		me = jQuery("#" + row);
 		next = jQuery("#" + row).next();
-		me.before(next);
+		if(next.attr("class")=="test") {
+			me.before(next);
+		}		
 	}
 
 	function remove(row) {		
@@ -95,8 +99,21 @@
 		<th><openmrs:message code="diseaseregistry.tests"/></th>
 		<td id="tests">			
 			<input id="test" type="text" size="35" /><br/>
+			<c:if test="${fn:length(tests) != 0}">
+				<c:forEach var="test" items="${tests}">
+					<div id='${test.drConceptId}' class='test'>
+						<openmrs:concept conceptId="${test.concept.conceptId}" var="v" nameVar="n" numericVar="num">
+							<input name='${test.drConceptId}' value='${n.name}' readonly/>
+						</openmrs:concept>						
+						<a href='javascript:moveUp(${test.drConceptId})'>Up</a>&nbsp;
+						<a href='javascript:moveDown(${test.drConceptId})'>Down</a>&nbsp;
+						<a href='javascript:remove(${test.drConceptId})'>Delete</a>
+						<input name='tests' type='hidden' value='${test.drConceptId}'/>
+					</div>
+				</c:forEach>				
+			</c:if>
 		</td>
-	</tr>	
+	</tr>	 
 	</table>	
 	<input type="submit" value='<openmrs:message code="Program.save"/>' onClick="jQuery('#theForm').submit()" /> <br/><br/>
 

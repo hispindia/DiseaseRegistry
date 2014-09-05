@@ -7,8 +7,8 @@
 
 	<class name="DRConcept" table="dr_concept" batch-size="500">
 
-		<id name="id" type="int" column="dr_concept_id" unsaved-value="0">
-			<generator class="native" />
+		<id name="drConceptId" type="java.lang.String" column="dr_concept_id" unsaved-value="0">
+			<!-- <generator class="native" />  -->
 		</id>
 		<many-to-one name="concept" class="org.openmrs.Concept"
 			column="concept_id" />

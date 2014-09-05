@@ -54,7 +54,7 @@
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 			
 			CREATE TABLE IF NOT EXISTS `dr_concept` (	
-			`dr_concept_id` int(11) NOT NULL AUTO_INCREMENT,		
+			`dr_concept_id` varchar(14) NOT NULL,
 			`concept_id` int(11) NOT NULL,
 			`dr_workflow_id` int(11) NOT NULL,
 			`weight` int(11) NOT NULL DEFAULT 0,
