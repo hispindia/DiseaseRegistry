@@ -38,6 +38,14 @@
 		DRWorkflow.hbm.xml
 		DRConcept.hbm.xml
 	</mappingFiles>	
+	
+	<globalProperty>
+		<property>${project.parent.artifactId}.opdWard</property>
+		<defaultValue>0</defaultValue>
+		<description>
+			Concept to Disease Registry Ward
+		</description>
+	</globalProperty>
 
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->
