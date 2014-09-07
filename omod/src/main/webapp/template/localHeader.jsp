@@ -1,9 +1,8 @@
 <spring:htmlEscape defaultHtmlEscape="true" />
 <ul id="menu">
-	<li class="first"
-		<c:if test='<%= request.getRequestURI().contains("/dashboard") %>'>class="active"</c:if>>
+	<li class="first <c:if test='<%= request.getRequestURI().contains("/dashboard") %>'>active</c:if>">
 		<a
-		href="${pageContext.request.contextPath}/module/diseaseregistry/dashboard"><spring:message
+		href="${pageContext.request.contextPath}/module/diseaseregistry/dashboard.list"><spring:message
 				code="diseaseregistry.dashboard" /></a>
 	</li>
 	<li
