@@ -15,7 +15,22 @@
 			</tr>
 		</c:if>
 		<c:if test="${fn:length(patientQueues) != 0}">
-			${patientQueues}
+			<table cellspacing="0" cellpadding="2">
+				<tr>					
+					<th><openmrs:message code="diseaseregistry.patient.identifier"/></th>
+					<th><openmrs:message code="diseaseregistry.patient.name"/></th>
+					<th><openmrs:message code="diseaseregistry.program"/></th>
+				</tr>
+				<c:forEach var="patient" items="${patientQueues}">
+					<tr>
+						<td>
+							<a href="patientProfile.form?patientId=${patient.patient.patientId}">${patient.patientIdentifier}</a>
+						</td>
+						<td>${patient.patientName}</td>
+						<td></td>
+					</tr>
+				</c:forEach>
+			</table>			
 		</c:if>
 	</div>
 </c:if>
