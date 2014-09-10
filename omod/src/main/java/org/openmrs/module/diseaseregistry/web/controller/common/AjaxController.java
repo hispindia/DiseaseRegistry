@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.openmrs.ConceptWord;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AjaxController {
-	
+
 	/**
 	 * Concept search autocomplete for form
 	 * 
@@ -48,5 +50,15 @@ public class AjaxController {
 		});
 		model.addAttribute("conceptNames", concepts);
 		return "/module/diseaseregistry/ajax/autocompleteConceptSearch";
+	}
+
+	@RequestMapping(value = "/module/diseaseregistry/ajax/programDroplist.htm", method = RequestMethod.GET)
+	public String getProgramCombobox(Model model) {
+
+		List<DRProgram> programs = new ArrayList<DRProgram>(Context.getService(
+				DiseaseRegistryService.class).getPrograms(
+				DiseaseRegistryService.NOT_INCLUDE_RETIRED));
+		model.addAttribute("programs", programs);
+		return "/module/diseaseregistry/ajax/programDroplist";
 	}
 }

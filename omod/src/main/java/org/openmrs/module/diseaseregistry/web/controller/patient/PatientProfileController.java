@@ -13,20 +13,17 @@
  */
 package org.openmrs.module.diseaseregistry.web.controller.patient;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.diseaseregistry.DiseaseRegistryConstants;
-import org.openmrs.module.hospitalcore.PatientQueueService;
-import org.openmrs.module.hospitalcore.model.OpdPatientQueue;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * The main controller.
@@ -41,9 +38,13 @@ public class PatientProfileController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.GET)
-	public String show(ModelMap model) {
+	public String show(ModelMap model, @RequestParam(value = "patientId") Integer patientId) {
 		
 
+		Patient patient = Context.getPatientService().getPatient(patientId);
+		
+		model.addAttribute("user", Context.getAuthenticatedUser());
+		model.addAttribute("patient", patient);
 		return "/module/diseaseregistry/patient/profile";
 	}
 }
