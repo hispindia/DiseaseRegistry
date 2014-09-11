@@ -69,6 +69,11 @@ public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements Di
     }
 	
 	@Override
+	public Collection<DRWorkflow> getWorkflowsByProgram(DRProgram program) {
+		return dao.getWorkflowsByProgram(program);
+	}
+	
+	@Override
 	public DRWorkflow getWorkflow(Integer id) {
     	return dao.getWorkflow(id);
     }

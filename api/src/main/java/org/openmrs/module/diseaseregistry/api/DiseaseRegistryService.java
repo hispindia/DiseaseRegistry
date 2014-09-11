@@ -55,6 +55,8 @@ public interface DiseaseRegistryService extends OpenmrsService {
 	public abstract Collection<DRConcept> getConceptByWorkflow(DRWorkflow workflow, boolean includeRetired);
 
 	public abstract DRConcept getConcept(String id);
+
+	public abstract Collection<DRWorkflow> getWorkflowsByProgram(DRProgram program);
      
 	/*
 	 * Add service methods here

@@ -12,6 +12,7 @@ import org.openmrs.ConceptWord;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,12 +54,22 @@ public class AjaxController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/ajax/programDroplist.htm", method = RequestMethod.GET)
-	public String getProgramCombobox(Model model) {
+	public String getProgramDroplist(Model model) {
 
 		List<DRProgram> programs = new ArrayList<DRProgram>(Context.getService(
 				DiseaseRegistryService.class).getPrograms(
 				DiseaseRegistryService.NOT_INCLUDE_RETIRED));
 		model.addAttribute("programs", programs);
 		return "/module/diseaseregistry/ajax/programDroplist";
+	}
+	
+	@RequestMapping(value = "/module/diseaseregistry/ajax/workflowDroplist.htm", method = RequestMethod.GET)
+	public String getWorkflowDroplist(Model model, @RequestParam(value = "programId") Integer programId) {
+
+		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
+		DRProgram program = drs.getProgram(programId);
+		List<DRWorkflow> workflows = new ArrayList<DRWorkflow>(drs.getWorkflowsByProgram(program));
+		model.addAttribute("workflows", workflows);
+		return "/module/diseaseregistry/ajax/workflowDroplist";
 	}
 }

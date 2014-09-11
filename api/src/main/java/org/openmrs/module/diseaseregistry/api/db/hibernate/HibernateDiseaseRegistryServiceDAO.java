@@ -78,6 +78,15 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 		return criteria.list();		
 	}
 	
+	
+	@Override
+	public Collection<DRWorkflow> getWorkflowsByProgram(DRProgram program) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DRWorkflow.class);
+		criteria.add(Restrictions.eq("voided", false));
+		criteria.add(Restrictions.eq("program", program));
+		return criteria.list();		
+	}
+	
 	@Override
 	public DRWorkflow getWorkflow(Integer id) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(

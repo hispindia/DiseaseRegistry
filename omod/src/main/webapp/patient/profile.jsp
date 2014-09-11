@@ -5,13 +5,18 @@
 
 <script type="text/javascript">
 	function enroll() {
+
+		var d = new Date();
+		id = d.getTime();
 		
 		jQuery("#enroll").attr("disabled","disabled");
 		clone = jQuery("#template_program").clone();
-		clone.attr("id", "program");
-		programDropList = jQuery("#template_programDroplist", clone);		
-		programDropList.attr("id", "programDropList");
+		clone.attr("id", "program_" + id);
 		clone.insertAfter(jQuery("#programs"));
+		programDropList = jQuery("#template_programDroplist", clone);		
+		programDropList.attr("id", "programDropList_" + id);
+		workflowDropList = jQuery("#template_workflowDroplist", clone);		
+		workflowDropList.attr("id", "workflowDroplist_" + id);
 
 		jQuery.ajax({
 			type : "GET",
@@ -21,14 +26,32 @@
 			}),
 			success : function(data) {
 				programDropList.append(data);
+				jQuery('select', programDropList).bind('change', function() {
+					updateWorkflow('programDropList_' + id, 'workflowDroplist_' + id)
+				});
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
 				alert("ERROR " + xhr);
 			}
 		});
-		
-		
+	}
 
+	function updateWorkflow(programId, workflowId) {
+		programId = jQuery('#'+programId).find(":selected").val();
+		jQuery.ajax({
+			type : "GET",
+			url : "<%= request.getContextPath() %>/module/diseaseregistry/ajax/workflowDroplist.htm",
+			data : ({
+				programId: programId
+			}),
+			success : function(data) {
+				jQuery('#'+workflowId).empty();
+				jQuery('#'+workflowId).append(data);
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				alert("ERROR " + xhr);
+			}
+		});
 	}
 </script>
 
@@ -73,11 +96,25 @@
 </table>
 
 <div style='display:none'>
-	<table>
-	<tr id='template_program'>
+	<table >
+	<tr id='template_program'>		
 		<td></td>
-		<td id='template_programDroplist'>
-			Program
+		<td >
+			<table>
+				<tr>
+					<td>Program</td>
+					<td id='template_programDroplist'></td>
+				</tr>
+				<tr>
+					<td>Workflow</td>
+					<td id='template_workflowDroplist'></td>
+				</tr>
+				<tr>
+					<td colspan='2'>
+						<input type='button' value='Delete'/>
+					</td>					
+				</tr>
+			</table>
 		</td>
 	</tr>
 	</table>
