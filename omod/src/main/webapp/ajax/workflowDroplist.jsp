@@ -18,7 +18,7 @@
  *
 --%> 
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<select name="workflow">
+<select name="workflowId">
 	<option value=""></option>
 	<c:forEach var="workflow" items="${workflows}">		
 		<option value="${workflow.id}">${workflow.name}</option>

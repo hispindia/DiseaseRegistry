@@ -25,6 +25,7 @@ import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 
 /**
  * It is a default implementation of  {@link DiseaseRegistryServiceDAO}.
@@ -116,5 +117,10 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 				DRConcept.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (DRConcept) criteria.uniqueResult();
-	}
+	}	
+	
+	@Override
+	public DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient) throws DAOException {		
+		return (DRWorkflowPatient) sessionFactory.getCurrentSession().merge(workflowPatient);
+	}	
 }

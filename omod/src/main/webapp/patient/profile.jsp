@@ -6,17 +6,11 @@
 <script type="text/javascript">
 	function enroll() {
 
-		var d = new Date();
-		id = d.getTime();
-		
 		jQuery("#enroll").attr("disabled","disabled");
-		clone = jQuery("#template_program").clone();
-		clone.attr("id", "program_" + id);
-		clone.insertAfter(jQuery("#programs"));
-		programDropList = jQuery("#template_programDroplist", clone);		
-		programDropList.attr("id", "programDropList_" + id);
-		workflowDropList = jQuery("#template_workflowDroplist", clone);		
-		workflowDropList.attr("id", "workflowDroplist_" + id);
+
+		var d = new Date();
+		enrollId = d.getTime();				
+		initializeClone(enrollId);
 
 		jQuery.ajax({
 			type : "GET",
@@ -27,7 +21,7 @@
 			success : function(data) {
 				programDropList.append(data);
 				jQuery('select', programDropList).bind('change', function() {
-					updateWorkflow('programDropList_' + id, 'workflowDroplist_' + id)
+					programChanged(enrollId);
 				});
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
@@ -36,8 +30,11 @@
 		});
 	}
 
-	function updateWorkflow(programId, workflowId) {
-		programId = jQuery('#'+programId).find(":selected").val();
+	function programChanged(enrollId) {
+
+		idMap = createIdMap(enrollId);		
+
+		programId = jQuery('#' + idMap['programDropListId']).find(":selected").val();
 		jQuery.ajax({
 			type : "GET",
 			url : "<%= request.getContextPath() %>/module/diseaseregistry/ajax/workflowDroplist.htm",
@@ -45,13 +42,69 @@
 				programId: programId
 			}),
 			success : function(data) {
-				jQuery('#'+workflowId).empty();
-				jQuery('#'+workflowId).append(data);
+				workflowDroplist = jQuery('#' + idMap['workflowDropListId']);
+				workflowDroplist.empty();
+				workflowDroplist.append(data);
+				
+				jQuery('select', workflowDroplist).bind('change', function() {
+					workflowChanged(enrollId);
+				});
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
 				alert("ERROR " + xhr);
 			}
 		});
+	}
+
+	function workflowChanged(enrollId) {
+
+		idMap = createIdMap(enrollId);				
+		selectedProgramId = jQuery('#'+idMap['programDropListId']).find(":selected").val();
+		selectedWorkflowId = jQuery('#'+idMap['workflowDropListId']).find(":selected").val();
+
+		if(selectedProgramId>0 && selectedWorkflowId>0) {
+			jQuery('#'+idMap['buttons']).append('<input id="' + idMap['enrollButton'] + '" type="submit" value="Enroll"/>');
+		}
+	}
+
+	function createIdMap(enrollId) {
+		var map = {}
+		map['programDropListId'] = 'programDropList_' + enrollId;
+		map['workflowDropListId'] = 'workflowDroplist_' + enrollId;
+		map['enrollForm'] = 'enrollForm_' + enrollId;
+		map['buttons'] = 'buttons_' + enrollId;
+		map['deleteButton'] = 'deleteButton_' + enrollId;
+		map['enrollButton'] = 'enrollButton_' + enrollId;
+		return map;
+	}
+
+	function initializeClone(enrollId) {
+
+		// update ids
+		idMap = createIdMap(enrollId);
+		clone = jQuery("#template_enrollForm").clone();
+		clone.attr("id", "enrollForm_" + enrollId);
+		clone.insertAfter(jQuery("#programs"));
+		programDropList = jQuery("#template_programDroplist", clone);		
+		programDropList.attr("id", idMap['programDropListId']);
+		workflowDropList = jQuery("#template_workflowDroplist", clone);		
+		workflowDropList.attr("id", idMap['workflowDropListId']);
+		deleteButton = jQuery("#template_deleteButton", clone);		
+		deleteButton.attr("id", idMap['deleteButton']);
+		buttons = jQuery("#template_buttons", clone);		
+		buttons.attr("id", idMap['buttons']);
+
+		// update videos		
+		jQuery(deleteButton).bind('click', function() {
+			clone.remove();
+			jQuery("#enroll").attr("disabled","");
+		});
+	}
+
+	ACTIONS = {
+		enrollDelete: function() {
+			
+		}
 	}
 </script>
 
@@ -97,25 +150,27 @@
 
 <div style='display:none'>
 	<table >
-	<tr id='template_program'>		
+	<tr id='template_enrollForm'>			
 		<td></td>
 		<td >
-			<table>
-				<tr>
-					<td>Program</td>
-					<td id='template_programDroplist'></td>
-				</tr>
-				<tr>
-					<td>Workflow</td>
-					<td id='template_workflowDroplist'></td>
-				</tr>
-				<tr>
-					<td colspan='2'>
-						<input type='button' value='Delete'/>
-					</td>					
-				</tr>
-			</table>
-		</td>
+			<form method='POST'>				
+				<table>
+					<tr>
+						<td>Program</td>
+						<td id='template_programDroplist'></td>
+					</tr>
+					<tr>
+						<td>Workflow</td>
+						<td id='template_workflowDroplist'></td>
+					</tr>
+					<tr>
+						<td colspan='2' id='template_buttons'>
+							<input id='template_deleteButton' type='button' value='Delete'/>
+						</td>					
+					</tr>
+				</table>
+			</form>
+		</td>		
 	</tr>
 	</table>
 </div>

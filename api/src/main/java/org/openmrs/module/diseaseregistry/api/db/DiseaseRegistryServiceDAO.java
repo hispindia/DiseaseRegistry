@@ -22,6 +22,7 @@ import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 
 /**
  *  Database methods for {@link DiseaseRegistryService}.
@@ -47,4 +48,7 @@ public interface DiseaseRegistryServiceDAO {
 	public abstract DRConcept getConcept(String id);
 
 	public abstract Collection<DRWorkflow> getWorkflowsByProgram(DRProgram program);
+
+	public abstract DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient)
+			throws DAOException;
 }

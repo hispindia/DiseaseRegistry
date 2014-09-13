@@ -17,14 +17,14 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.db.DiseaseRegistryServiceDAO;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 
 /**
  * It is a default implementation of {@link DiseaseRegistryService}.
@@ -91,5 +91,10 @@ public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements Di
 	@Override
 	public DRConcept getConcept(String id) {
 		return dao.getConcept(id);
+	}	
+	
+	@Override
+	public DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient) throws DAOException {		
+		return dao.saveWorkflowPatient(workflowPatient);
 	}
 }

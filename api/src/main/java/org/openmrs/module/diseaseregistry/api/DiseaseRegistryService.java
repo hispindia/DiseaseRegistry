@@ -17,9 +17,11 @@ import java.util.Collection;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.ProgramWorkflowService;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRProgram;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -57,6 +59,9 @@ public interface DiseaseRegistryService extends OpenmrsService {
 	public abstract DRConcept getConcept(String id);
 
 	public abstract Collection<DRWorkflow> getWorkflowsByProgram(DRProgram program);
+
+	public abstract DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient)
+			throws DAOException;
      
 	/*
 	 * Add service methods here

@@ -13,10 +13,15 @@
  */
 package org.openmrs.module.diseaseregistry.web.controller.patient;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
+import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -46,5 +51,23 @@ public class PatientProfileController {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("patient", patient);
 		return "/module/diseaseregistry/patient/profile";
+	}
+	
+	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.POST)
+	public String show(ModelMap model, @RequestParam(value = "patientId") Integer patientId, @RequestParam(value = "workflowId") Integer workflowId) {
+		
+
+		Patient patient = Context.getPatientService().getPatient(patientId);
+		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
+		DRWorkflow workflow = drs.getWorkflow(workflowId);
+		DRWorkflowPatient workflowPatient = new DRWorkflowPatient();
+		workflowPatient.setPatient(patient);
+		workflowPatient.setWorkflow(workflow);
+		workflowPatient.setStatus(DRWorkflowPatient.ENROLLED);
+		workflowPatient.setDateEnrolled(new Date());
+		workflowPatient.setDateCreated(new Date());
+		workflowPatient.setCreator(Context.getAuthenticatedUser());
+		drs.saveWorkflowPatient(workflowPatient);
+		return "redirect:/module/diseaseregistry/patientProfile.form?patientId=" + patientId;
 	}
 }
