@@ -41,6 +41,7 @@
 		DRProgram.hbm.xml
 		DRWorkflow.hbm.xml
 		DRConcept.hbm.xml
+		DRWorkflowPatient.hbm.xml
 	</mappingFiles>	
 	
 	<globalProperty>

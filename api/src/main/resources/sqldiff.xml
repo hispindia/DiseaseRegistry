@@ -69,5 +69,32 @@
 			PRIMARY	KEY (`dr_concept_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
-	</diff>	
+	</diff>
+	<diff>
+		<version>0.2</version>
+		<author>Truong Ha</author>
+		<date>Sep 13th 2014</date>
+		<description>
+			Create table for Disease Registry Workflow Patient
+		</description>
+		<sql>
+			CREATE TABLE IF NOT EXISTS `dr_workflow_patient` (
+			`dr_workflow_patient_id` int(11) NOT NULL AUTO_INCREMENT,
+			`dr_workflow_id` int(11) DEFAULT NULL,
+			`patient_id` int(11) DEFAULT NULL,
+			`enrolled_date` datetime DEFAULT NULL,
+			`tested_date` datetime DEFAULT NULL,			
+			`status` varchar(20) DEFAULT NULL,			
+			`created_by` int(11) DEFAULT NULL,
+			`created_date` datetime DEFAULT NULL,
+			`updated_by` int(11) DEFAULT NULL,
+			`updated_date` datetime DEFAULT NULL,
+			`retired` bit(1) default NULL,
+			`retired_date` datetime DEFAULT NULL,
+			`retired_by` int(11) DEFAULT NULL,
+			`retired_reason` varchar(255) DEFAULT NULL,
+			PRIMARY	KEY (`dr_workflow_patient_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		</sql>
+	</diff>		
 </sqldiff>
