@@ -188,11 +188,11 @@
 			<form method='POST'>				
 				<table>
 					<tr>
-						<td>Program</td>
+						<td><openmrs:message code="diseaseregistry.program"/></td>
 						<td id='template_programDroplist'></td>
 					</tr>
 					<tr>
-						<td>Workflow</td>
+						<td><openmrs:message code="diseaseregistry.workflow"/></td>
 						<td id='template_workflowDroplist'></td>
 					</tr>
 					<tr>
