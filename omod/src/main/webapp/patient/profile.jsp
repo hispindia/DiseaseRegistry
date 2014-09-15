@@ -146,6 +146,38 @@
 		<td></td>
 		<td><input id='enroll' type='button' value='Enroll' onclick='enroll()'/></td>
 	</tr>
+	<c:if test="${fn:length(workflowPatients) != 0}">
+		<c:forEach var="workflowPatient" items="${workflowPatients}">
+			<tr>
+				<td></td>
+				<td >
+					<form method='GET' action='patientTest.form'>
+						<input type='hidden' name='workflowPatientId' value='${workflowPatient.id}'/>
+						<table style='border: 1px solid green; margin: 2px; padding: 2px;'>
+							<tr>
+								<td><b><openmrs:message code="diseaseregistry.program"/></b></td>
+								<td>${workflowPatient.workflow.program.name}</td>
+							</tr>
+							<tr>
+								<td><b><openmrs:message code="diseaseregistry.workflow"/></b></td>
+								<td>${workflowPatient.workflow.name}</td>
+							</tr>
+							<tr>
+								<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
+								<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
+							</tr>
+							<tr>
+								<td colspan='2'>
+									<input type='submit' value='Enter test'/>
+									<input type='submit' value='Cancel'/>
+								</td>					
+							</tr>
+						</table>
+					</form>
+				</td>	
+			</tr>
+		</c:forEach>
+	</c:if>
 </table>
 
 <div style='display:none'>

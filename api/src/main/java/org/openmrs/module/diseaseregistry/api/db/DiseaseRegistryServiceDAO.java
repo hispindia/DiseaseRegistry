@@ -17,6 +17,7 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
@@ -51,4 +52,6 @@ public interface DiseaseRegistryServiceDAO {
 
 	public abstract DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient)
 			throws DAOException;
+
+	public abstract Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired);
 }

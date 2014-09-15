@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.diseaseregistry.web.controller.patient;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,22 +45,29 @@ public class PatientProfileController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.GET)
-	public String show(ModelMap model, @RequestParam(value = "patientId") Integer patientId) {
-		
+	public String show(ModelMap model,
+			@RequestParam(value = "patientId") Integer patientId) {
 
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		
+		List<DRWorkflowPatient> workflowPatients = new ArrayList<DRWorkflowPatient>(
+				Context.getService(DiseaseRegistryService.class)
+						.getWorkflowPatients(patient,
+								DiseaseRegistryService.NOT_INCLUDE_RETIRED));
+
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("patient", patient);
+		model.addAttribute("workflowPatients", workflowPatients);
 		return "/module/diseaseregistry/patient/profile";
 	}
-	
+
 	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.POST)
-	public String show(ModelMap model, @RequestParam(value = "patientId") Integer patientId, @RequestParam(value = "workflowId") Integer workflowId) {
-		
+	public String show(ModelMap model,
+			@RequestParam(value = "patientId") Integer patientId,
+			@RequestParam(value = "workflowId") Integer workflowId) {
 
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		DiseaseRegistryService drs = Context.getService(DiseaseRegistryService.class);
+		DiseaseRegistryService drs = Context
+				.getService(DiseaseRegistryService.class);
 		DRWorkflow workflow = drs.getWorkflow(workflowId);
 		DRWorkflowPatient workflowPatient = new DRWorkflowPatient();
 		workflowPatient.setPatient(patient);
@@ -68,6 +77,7 @@ public class PatientProfileController {
 		workflowPatient.setDateCreated(new Date());
 		workflowPatient.setCreator(Context.getAuthenticatedUser());
 		drs.saveWorkflowPatient(workflowPatient);
-		return "redirect:/module/diseaseregistry/patientProfile.form?patientId=" + patientId;
+		return "redirect:/module/diseaseregistry/patientProfile.form?patientId="
+				+ patientId;
 	}
 }

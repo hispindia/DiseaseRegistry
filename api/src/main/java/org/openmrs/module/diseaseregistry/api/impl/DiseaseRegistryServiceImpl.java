@@ -17,6 +17,9 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
@@ -96,5 +99,10 @@ public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements Di
 	@Override
 	public DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient) throws DAOException {		
 		return dao.saveWorkflowPatient(workflowPatient);
+	}
+	
+	@Override
+	public Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired) {
+		return dao.getWorkflowPatients(patient, includeRetired);
 	}
 }

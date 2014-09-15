@@ -15,6 +15,7 @@ package org.openmrs.module.diseaseregistry.api;
 
 import java.util.Collection;
 
+import org.openmrs.Patient;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.db.DAOException;
@@ -62,6 +63,8 @@ public interface DiseaseRegistryService extends OpenmrsService {
 
 	public abstract DRWorkflowPatient saveWorkflowPatient(DRWorkflowPatient workflowPatient)
 			throws DAOException;
+
+	public abstract Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired);
      
 	/*
 	 * Add service methods here
