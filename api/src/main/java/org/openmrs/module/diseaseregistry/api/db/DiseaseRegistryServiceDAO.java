@@ -54,4 +54,6 @@ public interface DiseaseRegistryServiceDAO {
 			throws DAOException;
 
 	public abstract Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired);
+
+	public abstract DRWorkflowPatient getWorkflowPatient(Integer id);
 }

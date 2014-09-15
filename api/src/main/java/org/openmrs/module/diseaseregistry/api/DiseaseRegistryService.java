@@ -65,6 +65,8 @@ public interface DiseaseRegistryService extends OpenmrsService {
 			throws DAOException;
 
 	public abstract Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired);
+
+	public abstract DRWorkflowPatient getWorkflowPatient(Integer id);
      
 	/*
 	 * Add service methods here

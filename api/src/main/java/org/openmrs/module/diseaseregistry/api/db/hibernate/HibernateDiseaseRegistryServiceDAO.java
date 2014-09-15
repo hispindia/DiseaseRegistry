@@ -133,5 +133,13 @@ public class HibernateDiseaseRegistryServiceDAO implements DiseaseRegistryServic
 		if (!includeRetired)
 			criteria.add(Restrictions.eq("voided", false));
 		return criteria.list();
+	}	
+	
+	@Override
+	public DRWorkflowPatient getWorkflowPatient(Integer id) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				DRWorkflowPatient.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (DRWorkflowPatient) criteria.uniqueResult();
 	}
 }

@@ -104,5 +104,10 @@ public class DiseaseRegistryServiceImpl extends BaseOpenmrsService implements Di
 	@Override
 	public Collection<DRWorkflowPatient> getWorkflowPatients(Patient patient, boolean includeRetired) {
 		return dao.getWorkflowPatients(patient, includeRetired);
+	}	
+	
+	@Override
+	public DRWorkflowPatient getWorkflowPatient(Integer id) {
+		return dao.getWorkflowPatient(id);
 	}
 }

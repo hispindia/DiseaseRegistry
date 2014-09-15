@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
+import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * The main controller.
  */
 @Controller
-public class PatientProfileController {
+public class PatientTestController {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
@@ -44,24 +45,22 @@ public class PatientProfileController {
 	public void initBinder(WebDataBinder binder) {
 	}
 
-	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/diseaseregistry/patientTest.form", method = RequestMethod.GET)
 	public String show(ModelMap model,
-			@RequestParam(value = "patientId") Integer patientId) {
+			@RequestParam(value = "workflowPatientId") Integer workflowPatientId) {
 
-		Patient patient = Context.getPatientService().getPatient(patientId);
-		List<DRWorkflowPatient> workflowPatients = new ArrayList<DRWorkflowPatient>(
-				Context.getService(DiseaseRegistryService.class)
-						.getWorkflowPatients(patient,
-								DiseaseRegistryService.NOT_INCLUDE_RETIRED));
-
+		DiseaseRegistryService drs = Context
+				.getService(DiseaseRegistryService.class);		
+		DRWorkflowPatient workflowPatient = drs.getWorkflowPatient(workflowPatientId);
+		List<DRConcept> tests = new ArrayList<DRConcept>(drs.getConceptByWorkflow(workflowPatient.getWorkflow(), DiseaseRegistryService.NOT_INCLUDE_RETIRED));		
+		model.addAttribute("workflowPatient", workflowPatient);
+		model.addAttribute("tests", tests);
 		model.addAttribute("user", Context.getAuthenticatedUser());
-		model.addAttribute("patient", patient);
-		model.addAttribute("workflowPatients", workflowPatients);
-		return "/module/diseaseregistry/patient/profile";
+		return "/module/diseaseregistry/patient/test";
 	}
 
-	@RequestMapping(value = "/module/diseaseregistry/patientProfile.form", method = RequestMethod.POST)
-	public String enroll(ModelMap model,
+	@RequestMapping(value = "/module/diseaseregistry/patientTest.form", method = RequestMethod.POST)
+	public String enterTest(ModelMap model,
 			@RequestParam(value = "patientId") Integer patientId,
 			@RequestParam(value = "workflowId") Integer workflowId) {
 
