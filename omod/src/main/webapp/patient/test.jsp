@@ -48,18 +48,30 @@
 		<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
 	</tr>
 </table>
-<c:if test="${fn:length(tests) == 0}">		
+<c:if test="${fn:length(testDetails) == 0}">		
 	No test found for this workflow
 </c:if>
-<c:if test="${fn:length(tests) != 0}">
+<c:if test="${fn:length(testDetails) != 0}">
 	<form id='theForm' method='POST'>
 		<table>
-			<c:forEach var='test' items='${tests}'>
+			<c:forEach var='testDetail' items='${testDetails}'>
 				<tr>
-					<openmrs:concept conceptId="${test.concept.conceptId}" var="v" nameVar="n" numericVar="num">
-						<td>${n.name}</td>
-						<td><input name='${test.drConceptId}'/></td>	
-					</openmrs:concept>					
+					<td>${testDetail['name']}</td>
+					<td>
+						<c:choose>
+							<c:when test="${testDetail['type'] eq 'textbox'}">
+								<input type="text" name="${testDetail['id']}" value=""/>
+							</c:when>
+							<c:when test="${testDetail['type'] eq 'selection'}">
+								<select name="${testDetail['id']}">
+									<option value=''>Please select</option>
+									<c:forEach var="option" items="${testDetail['options'] }">
+										<option value="${option}">${option}</option>
+									</c:forEach>
+								</select>
+							</c:when>
+					</c:choose>
+					</td>
 				</tr>
 			</c:forEach>
 			<tr>
