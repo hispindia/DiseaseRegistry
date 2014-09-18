@@ -82,6 +82,7 @@
 			`dr_workflow_patient_id` int(11) NOT NULL AUTO_INCREMENT,
 			`dr_workflow_id` int(11) DEFAULT NULL,
 			`patient_id` int(11) DEFAULT NULL,
+			`encounter_id` int(11) DEFAULT NULL,
 			`enrolled_date` datetime DEFAULT NULL,
 			`tested_date` datetime DEFAULT NULL,			
 			`status` varchar(20) DEFAULT NULL,			

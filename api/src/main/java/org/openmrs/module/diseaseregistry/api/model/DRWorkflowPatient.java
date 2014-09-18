@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.openmrs.BaseOpenmrsData;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 
 public class DRWorkflowPatient extends BaseOpenmrsData implements Serializable {
@@ -18,7 +19,8 @@ public class DRWorkflowPatient extends BaseOpenmrsData implements Serializable {
 	private Patient patient;
 	private Date dateEnrolled;
 	private Date dateTested;
-	private String status; 
+	private String status;
+	private Encounter encounter;
 	
 	public DRWorkflowPatient() {
 		super.setVoided(false);
@@ -70,6 +72,14 @@ public class DRWorkflowPatient extends BaseOpenmrsData implements Serializable {
 
 	public void setDateTested(Date dateTested) {
 		this.dateTested = dateTested;
+	}
+
+	public Encounter getEncounter() {
+		return encounter;
+	}
+
+	public void setEncounter(Encounter encounter) {
+		this.encounter = encounter;
 	}
 
 	@Override

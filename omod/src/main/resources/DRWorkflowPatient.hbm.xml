@@ -13,7 +13,10 @@
 		<many-to-one name="workflow" class="DRWorkflow"
 			column="dr_workflow_id" cascade="none" />
 		<many-to-one name="patient" class="org.openmrs.Patient" column="patient_id"
-			cascade="none" />		
+			cascade="none" />
+		<many-to-one name="encounter" class="org.openmrs.Encounter" column="encounter_id"
+			cascade="none" />
+					
 		<property name="dateEnrolled" type="java.util.Date" column="enrolled_date"
 			not-null="true" length="19" />	
 		<property name="dateTested" type="java.util.Date" column="tested_date"
