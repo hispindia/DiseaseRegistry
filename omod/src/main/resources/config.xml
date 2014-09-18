@@ -51,6 +51,13 @@
 			Concept to Disease Registry Ward
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.DiseaseRegistryEncounterType</property>
+		<defaultValue>DISEASEREGISTRYENCOUNTER</defaultValue>
+		<description>
+			Disease Registry Encounter Type name
+		</description>
+	</globalProperty>
 
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->

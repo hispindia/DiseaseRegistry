@@ -16,23 +16,31 @@ package org.openmrs.module.diseaseregistry.web.controller.patient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptSet;
-import org.openmrs.Patient;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.diseaseregistry.DiseaseRegistryConstants;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
-import org.openmrs.module.diseaseregistry.api.model.DRWorkflow;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
+import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -104,23 +112,48 @@ public class PatientTestController {
 	}
 	
 	@RequestMapping(value = "/module/diseaseregistry/patientTest.form", method = RequestMethod.POST)
-	public String enterTest(ModelMap model,
-			@RequestParam(value = "patientId") Integer patientId,
-			@RequestParam(value = "workflowId") Integer workflowId) {
-
-		Patient patient = Context.getPatientService().getPatient(patientId);
+	public String enterTest(HttpServletRequest request, ModelMap model,
+			@RequestParam(value = "workflowPatientId") Integer workflowPatientId) {
+		
 		DiseaseRegistryService drs = Context
-				.getService(DiseaseRegistryService.class);
-		DRWorkflow workflow = drs.getWorkflow(workflowId);
-		DRWorkflowPatient workflowPatient = new DRWorkflowPatient();
-		workflowPatient.setPatient(patient);
-		workflowPatient.setWorkflow(workflow);
-		workflowPatient.setStatus(DRWorkflowPatient.ENROLLED);
-		workflowPatient.setDateEnrolled(new Date());
-		workflowPatient.setDateCreated(new Date());
-		workflowPatient.setCreator(Context.getAuthenticatedUser());
+				.getService(DiseaseRegistryService.class);		
+		DRWorkflowPatient workflowPatient = drs.getWorkflowPatient(workflowPatientId);
+		
+		Encounter encounter = workflowPatient.getEncounter();
+		if(encounter==null) {
+			encounter = new Encounter();
+		}
+		String encounterTypeStr = GlobalPropertyUtil.getString(
+				DiseaseRegistryConstants.PROPERTY_DISEASE_REGISTRY_ENCOUNTER_TYPE,
+				"DISEASEREGISTRYENCOUNTER");
+		EncounterType encounterType = Context.getEncounterService()
+				.getEncounterType(encounterTypeStr);
+		Encounter enc = new Encounter();
+		enc.setCreator(Context.getAuthenticatedUser());
+		enc.setDateCreated(new Date());
+		Location loc = Context.getLocationService().getLocation(1);
+		enc.setLocation(loc);
+		enc.setPatient(workflowPatient.getPatient());
+		enc.setPatientId(workflowPatient.getPatient().getId());
+		enc.setEncounterType(encounterType);
+		enc.setVoided(false);
+		enc.setProvider(Context.getAuthenticatedUser().getPerson());
+		enc.setUuid(UUID.randomUUID().toString());
+		enc.setEncounterDatetime(new Date());
+		enc = Context.getEncounterService().saveEncounter(enc);
+		workflowPatient.setEncounter(enc);
 		drs.saveWorkflowPatient(workflowPatient);
+		
+		/*
+		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
+			String parameterName = (String) e.nextElement();
+			if(StringUtils.isNumeric(parameterName)) {
+				
+			}
+		}
+		*/
+		
 		return "redirect:/module/diseaseregistry/patientProfile.form?patientId="
-				+ patientId;
+				+ workflowPatient.getPatient().getPatientId();
 	}
 }

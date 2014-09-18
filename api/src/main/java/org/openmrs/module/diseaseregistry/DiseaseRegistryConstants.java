@@ -4,4 +4,6 @@ public class DiseaseRegistryConstants {
 	
 	public static final String MODULE_ID = "diseaseregistry";
 	public static final String PROPERTY_OPD_WARD = MODULE_ID + ".opdWard";
+	public static final String PROPERTY_DISEASE_REGISTRY_ENCOUNTER_TYPE = MODULE_ID + ".DiseaseRegistryEncounterType";
+	
 }
