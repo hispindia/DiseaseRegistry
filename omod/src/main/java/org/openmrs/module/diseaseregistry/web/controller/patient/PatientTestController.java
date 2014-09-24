@@ -35,12 +35,17 @@ import org.openmrs.ConceptSet;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.diseaseregistry.DiseaseRegistryConstants;
 import org.openmrs.module.diseaseregistry.api.DiseaseRegistryService;
 import org.openmrs.module.diseaseregistry.api.model.DRConcept;
 import org.openmrs.module.diseaseregistry.api.model.DRWorkflowPatient;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
+import org.openmrs.module.hospitalcore.util.RadiologyUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -81,15 +86,21 @@ public class PatientTestController {
 				testDetail.put("type", "textbox");
 			} else if (concept.getDatatype().getName()
 					.equalsIgnoreCase("coded")) {
-				Set<String> options = new HashSet<String>();
+				Set<Map<String, String>> options = new HashSet<Map<String, String>>();
 				for (ConceptAnswer ca : concept.getAnswers()) {
 					Concept c = ca.getAnswerConcept();
-					options.add(c.getName().getName());
+					Map<String, String> option = new HashMap<String, String>();
+					option.put("conceptId", c.getConceptId().toString());
+					option.put("conceptName", c.getName().getName());					
+					options.add(option);
 				}
 
 				for (ConceptSet cs : concept.getConceptSets()) {
 					Concept c = cs.getConcept();
-					options.add(c.getName().getName());
+					Map<String, String> option = new HashMap<String, String>();
+					option.put("conceptId", c.getConceptId().toString());
+					option.put("conceptName", c.getName().getName());
+					options.add(option);
 				}
 				testDetail.put("options", options);
 				testDetail.put("type", "selection");
@@ -122,38 +133,99 @@ public class PatientTestController {
 		Encounter encounter = workflowPatient.getEncounter();
 		if(encounter==null) {
 			encounter = new Encounter();
+			String encounterTypeStr = GlobalPropertyUtil.getString(
+					DiseaseRegistryConstants.PROPERTY_DISEASE_REGISTRY_ENCOUNTER_TYPE,
+					"DISEASEREGISTRYENCOUNTER");
+			EncounterType encounterType = Context.getEncounterService()
+					.getEncounterType(encounterTypeStr);		
+			encounter.setCreator(Context.getAuthenticatedUser());
+			encounter.setDateCreated(new Date());
+			Location loc = Context.getLocationService().getLocation(1);
+			encounter.setLocation(loc);
+			encounter.setPatient(workflowPatient.getPatient());
+			encounter.setPatientId(workflowPatient.getPatient().getId());
+			encounter.setEncounterType(encounterType);
+			encounter.setVoided(false);
+			encounter.setProvider(Context.getAuthenticatedUser().getPerson());
+			encounter.setUuid(UUID.randomUUID().toString());
+			encounter.setEncounterDatetime(new Date());
+			encounter = Context.getEncounterService().saveEncounter(encounter);
+			workflowPatient.setEncounter(encounter);
 		}
-		String encounterTypeStr = GlobalPropertyUtil.getString(
-				DiseaseRegistryConstants.PROPERTY_DISEASE_REGISTRY_ENCOUNTER_TYPE,
-				"DISEASEREGISTRYENCOUNTER");
-		EncounterType encounterType = Context.getEncounterService()
-				.getEncounterType(encounterTypeStr);
-		Encounter enc = new Encounter();
-		enc.setCreator(Context.getAuthenticatedUser());
-		enc.setDateCreated(new Date());
-		Location loc = Context.getLocationService().getLocation(1);
-		enc.setLocation(loc);
-		enc.setPatient(workflowPatient.getPatient());
-		enc.setPatientId(workflowPatient.getPatient().getId());
-		enc.setEncounterType(encounterType);
-		enc.setVoided(false);
-		enc.setProvider(Context.getAuthenticatedUser().getPerson());
-		enc.setUuid(UUID.randomUUID().toString());
-		enc.setEncounterDatetime(new Date());
-		enc = Context.getEncounterService().saveEncounter(enc);
-		workflowPatient.setEncounter(enc);
-		drs.saveWorkflowPatient(workflowPatient);
 		
-		/*
-		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
-			String parameterName = (String) e.nextElement();
-			if(StringUtils.isNumeric(parameterName)) {
-				
+		Map<String, String> parameters = buildParameterList(request);
+		Order order = createOrder(encounter, workflowPatient.getWorkflow().getConcept(), workflowPatient.getPatient());
+		for (String key : buildParameterList(request).keySet()) {
+			
+			DRConcept test = drs.getConcept(key);						
+			Obs obs = insertValue(encounter, test.getConcept(), parameters.get(key), order);
+			if (obs.getId() == null) {
+				encounter.addObs(obs);
 			}
-		}
-		*/
+		}	
+		Context.getEncounterService().saveEncounter(encounter);
+		workflowPatient.setStatus(DRWorkflowPatient.TESTED);
+		workflowPatient.setDateTested(new Date());
+		workflowPatient.setDateChanged(new Date());
+		workflowPatient.setChangedBy(Context.getAuthenticatedUser());		
 		
 		return "redirect:/module/diseaseregistry/patientProfile.form?patientId="
 				+ workflowPatient.getPatient().getPatientId();
+	}
+	
+	private Map<String, String> buildParameterList(HttpServletRequest request) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
+			String parameterName = (String) e.nextElement();
+			if(StringUtils.isNumeric(parameterName)) {
+				parameters.put(parameterName, request.getParameter(parameterName));
+			}
+		}
+		return parameters;
+	}
+	
+	private Obs insertValue(Encounter encounter, Concept concept, String value, Order order) {
+
+		Obs obs = getObs(encounter, concept);
+		obs.setEncounter(encounter);
+		obs.setConcept(concept);
+		obs.setOrder(order);
+		if (concept.getDatatype().getName().equalsIgnoreCase("Text")) {
+			value = value.replace("\n", "\\n");
+			obs.setValueText(value);
+		} else if (concept.getDatatype().getName().equalsIgnoreCase("Numeric")) {
+			obs.setValueNumeric(new Double(value));
+		} else if (concept.getDatatype().getName().equalsIgnoreCase("Coded")) {
+			Concept answerConcept = RadiologyUtil.searchConcept(value);
+			obs.setValueCoded(answerConcept);
+		}		
+		return obs;
+	}
+
+	private Obs getObs(Encounter encounter, Concept concept) {
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(concept))
+				return obs;
+		}
+		Obs obs = new Obs();
+		return obs;
+	}
+	
+	private Order createOrder(Encounter encounter, Concept concept, Patient patient) {
+		Order order = new Order();
+		order.setConcept(concept);
+		order.setCreator(Context.getAuthenticatedUser());
+		order.setDateCreated(new Date());
+		order.setOrderer(Context.getAuthenticatedUser());
+		order.setPatient(patient);
+		order.setStartDate(new Date());
+		order.setAccessionNumber("0");
+		
+		Integer orderTypeId = GlobalPropertyUtil.getInteger(DiseaseRegistryConstants.GLOBAL_PROPRETY_DISEASE_REGISTRY_ORDER_TYPE, 5);
+		OrderType orderType = Context.getOrderService().getOrderType(orderTypeId);
+		order.setOrderType(orderType);
+		order.setEncounter(encounter);
+		encounter.addOrder(order);
+		return order;
 	}
 }

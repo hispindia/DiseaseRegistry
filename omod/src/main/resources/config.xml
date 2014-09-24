@@ -58,6 +58,13 @@
 			Disease Registry Encounter Type name
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.OrderTypeId</property>
+		<defaultValue>5</defaultValue>
+		<description>
+			Disease Registry Order Type id
+		</description>
+	</globalProperty>	
 
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->

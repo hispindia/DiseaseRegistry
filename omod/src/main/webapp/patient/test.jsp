@@ -66,7 +66,7 @@
 								<select name="${testDetail['id']}">
 									<option value=''>Please select</option>
 									<c:forEach var="option" items="${testDetail['options'] }">
-										<option value="${option}">${option}</option>
+										<option value="${option['conceptId']}">${option['conceptName']}</option>
 									</c:forEach>
 								</select>
 							</c:when>
