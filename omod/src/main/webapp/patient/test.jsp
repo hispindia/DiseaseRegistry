@@ -60,13 +60,16 @@
 					<td>
 						<c:choose>
 							<c:when test="${testDetail['type'] eq 'textbox'}">
-								<input type="text" name="${testDetail['id']}" value=""/>
+								<input type="text" name="${testDetail['id']}" value="${testDetail['value']}"/>
 							</c:when>
-							<c:when test="${testDetail['type'] eq 'selection'}">
+
+							<c:when test="${testDetail['type'] eq 'selection'}">							    
 								<select name="${testDetail['id']}">
 									<option value=''>Please select</option>
 									<c:forEach var="option" items="${testDetail['options'] }">
-										<option value="${option['conceptId']}">${option['conceptName']}</option>
+										<option value="${option['conceptId']}" <c:if test="${option['conceptId'] eq testDetail['value']}">selected</c:if>>
+											${option['conceptName']}
+										</option>
 									</c:forEach>
 								</select>
 							</c:when>

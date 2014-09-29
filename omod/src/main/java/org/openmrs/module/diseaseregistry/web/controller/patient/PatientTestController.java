@@ -75,6 +75,7 @@ public class PatientTestController {
 		DRWorkflowPatient workflowPatient = drs.getWorkflowPatient(workflowPatientId);
 		List<DRConcept> tests = new ArrayList<DRConcept>(drs.getConceptByWorkflow(workflowPatient.getWorkflow(), DiseaseRegistryService.NOT_INCLUDE_RETIRED));
 		List<Map<String, Object>> testDetails = new ArrayList<Map<String, Object>>();
+		Encounter encounter = workflowPatient.getEncounter();		
 		for(DRConcept test:tests) {
 			Concept concept = test.getConcept();
 			Map<String, Object> testDetail = new HashMap<String, Object>();
@@ -84,6 +85,9 @@ public class PatientTestController {
 					|| (concept.getDatatype().getName()
 							.equalsIgnoreCase("numeric"))) {
 				testDetail.put("type", "textbox");
+				if(encounter!=null) {
+					testDetail.put("value", getValue(encounter.getAllObs(), concept));
+				}
 			} else if (concept.getDatatype().getName()
 					.equalsIgnoreCase("coded")) {
 				Set<Map<String, String>> options = new HashSet<Map<String, String>>();
@@ -102,6 +106,10 @@ public class PatientTestController {
 					option.put("conceptName", c.getName().getName());
 					options.add(option);
 				}
+				
+				if(encounter!=null) {
+					testDetail.put("value", getValue(encounter.getAllObs(), concept));
+				}
 				testDetail.put("options", options);
 				testDetail.put("type", "selection");
 			}			
@@ -113,6 +121,22 @@ public class PatientTestController {
 		model.addAttribute("tests", tests);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		return "/module/diseaseregistry/patient/test";
+	}
+	
+	private String getValue(Set<Obs> allObs, Concept concept) {
+		
+		for(Obs obs:allObs) {
+			if(obs.getConcept().equals(concept)) {
+				if(concept.getDatatype().getName().equalsIgnoreCase("text")) {
+					return obs.getValueText();
+				} else if(concept.getDatatype().getName().equalsIgnoreCase("numeric")) {
+					return obs.getValueNumeric().toString();
+				} else if(concept.getDatatype().getName().equalsIgnoreCase("coded")) {
+					return obs.getValueCoded().getConceptId().toString();
+				}
+			}
+		}
+		return null;
 	}
 	
 	private List<String> getSortedOptionNames(Set<String> options){
