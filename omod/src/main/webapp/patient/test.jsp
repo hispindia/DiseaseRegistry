@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 </script>
-
+${action}
 <h2><spring:message code="diseaseregistry.patient.profile" /></h2>
 
 <c:set var="patient" value="${workflowPatient.patient}"/>
@@ -52,7 +52,42 @@
 	No test found for this workflow
 </c:if>
 <c:if test="${fn:length(testDetails) != 0}">
-	<form id='theForm' method='POST'>
+	<c:if test="${action eq 'Enter test'}">
+		<form id='theForm' method='POST'>
+			<table>
+				<c:forEach var='testDetail' items='${testDetails}'>
+					<tr>
+						<td>${testDetail['name']}</td>
+						<td>
+							<c:choose>
+								<c:when test="${testDetail['type'] eq 'textbox'}">
+									<input type="text" name="${testDetail['id']}" value="${testDetail['value']}"/>
+								</c:when>
+
+								<c:when test="${testDetail['type'] eq 'selection'}">							    
+									<select name="${testDetail['id']}">
+										<option value=''>Please select</option>
+										<c:forEach var="option" items="${testDetail['options'] }">
+											<option value="${option['conceptId']}" <c:if test="${option['conceptId'] eq testDetail['value']}">selected</c:if>>
+												${option['conceptName']}
+											</option>
+										</c:forEach>
+									</select>
+								</c:when>
+						</c:choose>
+						</td>
+					</tr>
+				</c:forEach>
+				<tr>
+					<td></td>
+					<td><input type="submit" value='<openmrs:message code="Program.save"/>' onClick="jQuery('#theForm').submit()" /> 
+						<input type="button" value='<openmrs:message code="general.cancel"/>' onClick='window.location.href="<%= request.getContextPath() %>/module/diseaseregistry/patientProfile.form?patientId=${patient.patientId}"' />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</c:if>	
+	<c:if test="${action eq 'View results'}">		
 		<table>
 			<c:forEach var='testDetail' items='${testDetails}'>
 				<tr>
@@ -60,18 +95,15 @@
 					<td>
 						<c:choose>
 							<c:when test="${testDetail['type'] eq 'textbox'}">
-								<input type="text" name="${testDetail['id']}" value="${testDetail['value']}"/>
+								${testDetail['value']}								
 							</c:when>
 
-							<c:when test="${testDetail['type'] eq 'selection'}">							    
-								<select name="${testDetail['id']}">
-									<option value=''>Please select</option>
-									<c:forEach var="option" items="${testDetail['options'] }">
-										<option value="${option['conceptId']}" <c:if test="${option['conceptId'] eq testDetail['value']}">selected</c:if>>
-											${option['conceptName']}
-										</option>
-									</c:forEach>
-								</select>
+							<c:when test="${testDetail['type'] eq 'selection'}">							    								
+								<c:forEach var="option" items="${testDetail['options'] }">
+									<c:if test="${option['conceptId'] eq testDetail['value']}">
+										${option['conceptName']}
+									</c:if>
+								</c:forEach>
 							</c:when>
 					</c:choose>
 					</td>
@@ -79,9 +111,10 @@
 			</c:forEach>
 			<tr>
 				<td></td>
-				<td><input type="submit" value='<openmrs:message code="Program.save"/>' onClick="jQuery('#theForm').submit()" /> <br/><br/></td>
+				<td><input type="button" value='<openmrs:message code="general.cancel"/>' onClick='window.location.href="<%= request.getContextPath() %>/module/diseaseregistry/patientProfile.form?patientId=${patient.patientId}"' />					
+				</td>
 			</tr>
 		</table>
-	</form>
+	</c:if>	
 </c:if>
 <%@ include file="/WEB-INF/template/footer.jsp"%>
