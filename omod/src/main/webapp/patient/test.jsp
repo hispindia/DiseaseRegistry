@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 </script>
-${action}
+
 <h2><spring:message code="diseaseregistry.patient.profile" /></h2>
 
 <c:set var="patient" value="${workflowPatient.patient}"/>
