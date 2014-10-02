@@ -68,7 +68,7 @@ public class PatientTestController {
 
 	@RequestMapping(value = "/module/diseaseregistry/patientTest.form", method = RequestMethod.GET)
 	public String show(ModelMap model,
-			@RequestParam(value = "workflowPatientId") Integer workflowPatientId) {
+			@RequestParam(value = "workflowPatientId") Integer workflowPatientId, @RequestParam(value = "action", required=false) String action) {
 
 		DiseaseRegistryService drs = Context
 				.getService(DiseaseRegistryService.class);		
@@ -117,9 +117,12 @@ public class PatientTestController {
 		}
 		
 		model.addAttribute("workflowPatient", workflowPatient);
-		model.addAttribute("testDetails", testDetails);
-		model.addAttribute("tests", tests);
+		model.addAttribute("testDetails", testDetails);		
 		model.addAttribute("user", Context.getAuthenticatedUser());
+		if(StringUtils.isBlank(action)) {
+			action = "Enter test";
+		}
+		model.addAttribute("action", action);
 		return "/module/diseaseregistry/patient/test";
 	}
 	

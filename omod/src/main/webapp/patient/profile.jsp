@@ -151,29 +151,59 @@
 			<tr>
 				<td></td>
 				<td >
-					<form method='GET' action='patientTest.form'>
-						<input type='hidden' name='workflowPatientId' value='${workflowPatient.id}'/>
-						<table style='border: 1px solid green; margin: 2px; padding: 2px;'>
-							<tr>
-								<td><b><openmrs:message code="diseaseregistry.program"/></b></td>
-								<td>${workflowPatient.workflow.program.name}</td>
-							</tr>
-							<tr>
-								<td><b><openmrs:message code="diseaseregistry.workflow"/></b></td>
-								<td>${workflowPatient.workflow.name}</td>
-							</tr>
-							<tr>
-								<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
-								<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
-							</tr>
-							<tr>
-								<td colspan='2'>
-									<input type='submit' value='Enter test'/>
-									<input type='submit' value='Cancel'/>
-								</td>					
-							</tr>
-						</table>
-					</form>
+					<c:if test='${workflowPatient.status eq "enrolled"}'>
+						<form method='GET' action='patientTest.form'>
+							<input type='hidden' name='workflowPatientId' value='${workflowPatient.id}'/>
+							<table style='border: 1px solid green; margin: 2px; padding: 2px;'>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.program"/></b></td>
+									<td>${workflowPatient.workflow.program.name}</td>
+								</tr>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.workflow"/></b></td>
+									<td>${workflowPatient.workflow.name}</td>
+								</tr>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
+									<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
+								</tr>
+								<tr>
+									<td colspan='2'>
+										<input type='submit' name='action' value='Enter test'/>
+										<input type='submit' name='action' value='Cancel'/>
+									</td>					
+								</tr>
+							</table>
+						</form>
+					</c:if>					
+					<c:if test='${workflowPatient.status eq "tested"}'>
+						<form method='GET' action='patientTest.form'>
+							<input type='hidden' name='workflowPatientId' value='${workflowPatient.id}'/>
+								<table style='border: 1px solid green; margin: 2px; padding: 2px;'>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.program"/></b></td>
+									<td>${workflowPatient.workflow.program.name}</td>
+								</tr>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.workflow"/></b></td>
+									<td>${workflowPatient.workflow.name}</td>
+								</tr>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
+									<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
+								</tr>
+								<tr>
+									<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
+									<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
+								</tr>
+								<tr>
+									<td colspan='2'>
+										<input type='submit' name='action' value='View results'/>
+									</td>					
+								</tr>
+							</table>
+						</form>						
+					</c:if>
 				</td>	
 			</tr>
 		</c:forEach>
