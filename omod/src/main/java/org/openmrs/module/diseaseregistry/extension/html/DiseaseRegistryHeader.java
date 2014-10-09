@@ -11,7 +11,7 @@ public class DiseaseRegistryHeader extends LinkExt {
 
 	@Override
 	public String getRequiredPrivilege() {
-		return null;
+		return "Manage Disease Registry";
 	}
 
 	@Override

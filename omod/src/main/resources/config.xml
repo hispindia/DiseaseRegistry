@@ -36,6 +36,25 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.DiseaseRegistryHeader</class>
 	</extension>
 	
+	<!-- privileges -->
+	<privilege>
+		<name>Manage Disease Registry</name>
+		<description>Allows user to manage Disease Registry</description>
+	</privilege>
+	<privilege>
+		<name>Manage Disease Registry Dashboard</name>
+		<description>Allows user to manage Disease Registry dashboard</description>
+	</privilege>
+	<privilege>
+		<name>Manage Disease Registry Program</name>
+		<description>Allows user to manage Disease Registry program</description>
+	</privilege>
+	<privilege>
+		<name>Manage Disease Registry Workflow</name>
+		<description>Allows user to manage Disease Registry workflow</description>
+	</privilege>
+	<!-- privileges -->
+	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 		DRProgram.hbm.xml
