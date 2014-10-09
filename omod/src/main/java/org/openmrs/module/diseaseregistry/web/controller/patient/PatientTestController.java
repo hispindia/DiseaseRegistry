@@ -69,10 +69,23 @@ public class PatientTestController {
 	@RequestMapping(value = "/module/diseaseregistry/patientTest.form", method = RequestMethod.GET)
 	public String show(ModelMap model,
 			@RequestParam(value = "workflowPatientId") Integer workflowPatientId, @RequestParam(value = "action", required=false) String action) {
-
+		
 		DiseaseRegistryService drs = Context
 				.getService(DiseaseRegistryService.class);		
 		DRWorkflowPatient workflowPatient = drs.getWorkflowPatient(workflowPatientId);
+		
+		// if user clicks Cancel button
+		if(StringUtils.isNotBlank(action)) {
+			if(action.equalsIgnoreCase("cancel")) {
+				workflowPatient.setVoided(true);
+				workflowPatient.setVoidedBy(Context.getAuthenticatedUser());
+				workflowPatient.setDateVoided(new Date());
+				drs.saveWorkflowPatient(workflowPatient);
+				return "redirect:/module/diseaseregistry/patientProfile.form?patientId="+ workflowPatient.getPatient().getPatientId();
+			} 
+		}
+		
+		// user clicks on Enter result button
 		List<DRConcept> tests = new ArrayList<DRConcept>(drs.getConceptByWorkflow(workflowPatient.getWorkflow(), DiseaseRegistryService.NOT_INCLUDE_RETIRED));
 		List<Map<String, Object>> testDetails = new ArrayList<Map<String, Object>>();
 		Encounter encounter = workflowPatient.getEncounter();		
