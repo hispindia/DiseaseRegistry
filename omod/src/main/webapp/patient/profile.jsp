@@ -193,8 +193,8 @@
 									<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
 								</tr>
 								<tr>
-									<td><b><openmrs:message code="diseaseregistry.tested.date"/></b></td>
-									<td><openmrs:formatDate date="${workflowPatient.dateTested}" type="textbox"/></td>
+									<td><b><openmrs:message code="diseaseregistry.enrolled.date"/></b></td>
+									<td><openmrs:formatDate date="${workflowPatient.dateEnrolled}" type="textbox"/></td>
 								</tr>
 								<tr>
 									<td colspan='2'>
