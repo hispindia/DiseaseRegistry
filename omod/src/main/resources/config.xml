@@ -23,13 +23,6 @@
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.DiseaseRegistryActivator</activator>
 	
-	
-	<!-- Adds link to admin page -->
-	<extension>
-		<point>org.openmrs.admin.list</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
-	</extension>
-	
 	<!-- Adds link to header -->
 	<extension>
 		<point>org.openmrs.gutter.tools</point>
