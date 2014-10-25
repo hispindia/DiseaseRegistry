@@ -208,6 +208,7 @@ public class PatientTestController {
 		workflowPatient.setDateTested(new Date());
 		workflowPatient.setDateChanged(new Date());
 		workflowPatient.setChangedBy(Context.getAuthenticatedUser());		
+		drs.saveWorkflowPatient(workflowPatient);
 		
 		return "redirect:/module/diseaseregistry/patientProfile.form?patientId="
 				+ workflowPatient.getPatient().getPatientId();
