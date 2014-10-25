@@ -15,9 +15,9 @@
 	<diff>
 		<version>0.1</version>
 		<author>Truong Ha</author>
-		<date>May 24th 2011</date>
+		<date>Oct 25 2014</date>
 		<description>
-			Create tables for Disease Registry program
+			Create tables for Disease Registry module
 		</description>
 		<sql>
 			CREATE TABLE IF NOT EXISTS `dr_program` (
@@ -68,16 +68,7 @@
 			`retired_reason` varchar(255) DEFAULT NULL,
 			PRIMARY	KEY (`dr_concept_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		</sql>
-	</diff>
-	<diff>
-		<version>0.2</version>
-		<author>Truong Ha</author>
-		<date>Sep 13th 2014</date>
-		<description>
-			Create table for Disease Registry Workflow Patient
-		</description>
-		<sql>
+			
 			CREATE TABLE IF NOT EXISTS `dr_workflow_patient` (
 			`dr_workflow_patient_id` int(11) NOT NULL AUTO_INCREMENT,
 			`dr_workflow_id` int(11) DEFAULT NULL,
@@ -97,5 +88,5 @@
 			PRIMARY	KEY (`dr_workflow_patient_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
-	</diff>		
+	</diff>
 </sqldiff>
