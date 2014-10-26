@@ -1,18 +1,9 @@
-Disease Registry module
-=======================
+This is the Disease Registry module for use with OpenMRS 1.9.7.
+ 
+It is released by HISP India under the terms of the GPLv3, a copy of which accompanies this file.
 
-Release notes
-
-### 08/17/2014
-* Added description to Github repository
-* Added feature to autocomplete search concept
-* Added feature to list all Workflows
-* Added feature to Add a new Workflow
-* Restructured controllers and their helpers to according packages
-
-### 08/16/2014
-* Added header
-* Added subheader with Dashboard function and Program function
-* Added feature to list all programs
-* Added feature to add new program
-* Reinitialized project
+Society for Health Information Systems and Programmes
+471 Alakananda Apartments
+Kalkaji
+New Delhi-110017
+India
