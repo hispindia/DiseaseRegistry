@@ -27,6 +27,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * The main controller.
@@ -41,7 +42,7 @@ public class DashboardController {
 	}
 
 	@RequestMapping(value = "/module/diseaseregistry/dashboard.list", method = RequestMethod.GET)
-	public String list(ModelMap model) {
+	public String list(@RequestParam(value = "q", required = false) String query, ModelMap model) {
 		
 		Integer opdWard = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(DiseaseRegistryConstants.PROPERTY_OPD_WARD));
 		if(opdWard==0) {
@@ -51,7 +52,7 @@ public class DashboardController {
 		}
 		
 		PatientQueueService patientQueueService = Context.getService(PatientQueueService.class);
-		List<OpdPatientQueue> patientQueues = patientQueueService.listOpdPatientQueue(null, opdWard, "",0, 0);		
+		List<OpdPatientQueue> patientQueues = patientQueueService.listOpdPatientQueue(query, opdWard, "",0, 0);		
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("patientQueues", patientQueues);
 
