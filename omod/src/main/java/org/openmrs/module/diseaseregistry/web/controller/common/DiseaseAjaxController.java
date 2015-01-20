@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class AjaxController {
+public class DiseaseAjaxController {
 
 	/**
 	 * Concept search autocomplete for form

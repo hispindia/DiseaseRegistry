@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * The main controller.
  */
 @Controller
-public class DashboardController {
+public class DiseaseDashboardController {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
